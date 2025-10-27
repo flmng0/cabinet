@@ -31,6 +31,26 @@ defmodule CabinetWeb.CoreComponents do
 
   alias Phoenix.LiveView.JS
 
+
+  ### CUSTOM
+
+  attr :href, :string
+  attr :value, :string
+  attr :icon_name, :string
+
+  attr :rest, :global
+
+  def icon_link(assigns) do
+    ~H"""
+    <a href={@href} {@rest}>
+      <.icon name={@icon_name} class="size-4" />
+      <span>{@value}</span>
+    </a>
+    """
+  end
+
+  ### DEFAULTS
+
   @doc """
   Renders flash notices.
 

@@ -1,7 +1,7 @@
 <div class="min-h-screen grid place-items-center bg-base-300">
   <Layouts.flash_group flash={@flash} />
 
-  <article class="w-full md:max-w-2xl mx-auto py-6 px-8 bg-base-100 shadow-sm rounded-md">
+  <article class="w-full md:max-w-2xl mx-auto py-6 px-8 bg-base-100 shadow-sm rounded-md space-y-8">
     <header>
       <div class="flex flex-row-reverse justify-between items-end gap-4">
         <h1 class="text-2xl bold uppercase text-right">{(@gst && "Tax") || ""} Invoice</h1>
@@ -12,14 +12,18 @@
       </div>
     </header>
 
-    <footer>
-      <address class="grid grid-cols-[auto_1fr] items-center gap-x-2">
-        <.address_item
+    <main>
+    </main>
+
+    <footer class="text-base-content/80">
+      <p>For inquiries about this invoice, contact {@contact_name} via:</p>
+      <address class="flex flex-col gap-1 pl-4 mt-2">
+        <.icon_link
           href={"mailto:#{@contact_email}"}
           value={@contact_email}
           icon_name="hero-envelope"
         />
-        <.address_item
+        <.icon_link
           href={"tel:#{@contact_number}"}
           value={@contact_number}
           icon_name="hero-phone"
