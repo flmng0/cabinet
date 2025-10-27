@@ -1,0 +1,11 @@
+<Layouts.flash_group flash={@flash} />
+
+<header>
+  <h1>{(@gst && "TAX") || ""} INVOICE</h1>
+  <h2>{@contact_name}</h2>
+
+  <address class="grid grid-cols-[auto_1fr] items-center gap-x-2">
+    <.address_item href={"mailto:#{@contact_email}"} value={@contact_email} icon_name="hero-envelope" />
+    <.address_item href={"tel:#{@contact_number}"} value={@contact_number} icon_name="hero-phone" />
+  </address>
+</header>

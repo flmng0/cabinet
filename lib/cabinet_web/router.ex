@@ -17,7 +17,7 @@ defmodule CabinetWeb.Router do
   scope "/", CabinetWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    get "/invoice/:id", InvoiceController, :view
   end
 
   # Other scopes may use custom stacks.

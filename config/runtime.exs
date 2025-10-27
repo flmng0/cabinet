@@ -116,4 +116,14 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Req
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+
+  config :cabinet, :business,
+    gst: System.get_env("BUSINESS_GST"),
+    abn: System.get_env("BUSINESS_ABN"),
+    pay_id: System.get_env("BUSINESS_PAY_ID"),
+    bsb: System.get_env("BUSINESS_BSB"),
+    account_number: System.get_env("BUSINESS_ACC_NUMBER"),
+    contact_name: System.get_env("BUSINESS_NAME"),
+    contact_email: System.get_env("BUSINESS_CONTACT_EMAIL"),
+    contact_number: System.get_env("BUSINESS_CONTACT_NUMBER")
 end

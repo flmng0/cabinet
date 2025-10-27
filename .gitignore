@@ -35,3 +35,4 @@ cabinet-*.tar
 npm-debug.log
 /assets/node_modules/
 
+/.expert/

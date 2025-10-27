@@ -1,5 +1,15 @@
 import Config
 
+config :cabinet, :business,
+  gst: false,
+  abn: nil,
+  pay_id: "0400000000",
+  bsb: 123_456,
+  account_number: 123_456_789,
+  contact_name: "John Doe",
+  contact_email: "example@email.com",
+  contact_number: "0400000000"
+
 # Configure your database
 config :cabinet, Cabinet.Repo,
   username: "postgres",
