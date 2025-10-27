@@ -84,7 +84,7 @@ defmodule CabinetWeb.Layouts do
 
   def flash_group(assigns) do
     ~H"""
-    <div id={@id} aria-live="polite">
+    <div id={@id} aria-live="polite" class="contents">
       <.flash kind={:info} flash={@flash} />
       <.flash kind={:error} flash={@flash} />
 

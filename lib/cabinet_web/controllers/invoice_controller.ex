@@ -9,7 +9,7 @@ defmodule CabinetWeb.InvoiceController do
 
   def view(conn, _params) do
     conn
-      |> assign_business()
-      |> render(:view)
+    |> assign_business()
+    |> render(:view)
   end
 end

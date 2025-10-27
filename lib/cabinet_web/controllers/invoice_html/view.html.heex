@@ -1,11 +1,30 @@
-<Layouts.flash_group flash={@flash} />
+<div class="min-h-screen grid place-items-center bg-base-300">
+  <Layouts.flash_group flash={@flash} />
 
-<header>
-  <h1>{(@gst && "TAX") || ""} INVOICE</h1>
-  <h2>{@contact_name}</h2>
+  <article class="w-full md:max-w-2xl mx-auto py-6 px-8 bg-base-100 shadow-sm rounded-md">
+    <header>
+      <div class="flex flex-row-reverse justify-between items-end gap-4">
+        <h1 class="text-2xl bold uppercase text-right">{(@gst && "Tax") || ""} Invoice</h1>
+        <h2 class="text-xl flex flex-col">
+          <span class="text-base text-base-content/50 font-mono lowercase -mb-1">From</span>
+          {@contact_name}
+        </h2>
+      </div>
+    </header>
 
-  <address class="grid grid-cols-[auto_1fr] items-center gap-x-2">
-    <.address_item href={"mailto:#{@contact_email}"} value={@contact_email} icon_name="hero-envelope" />
-    <.address_item href={"tel:#{@contact_number}"} value={@contact_number} icon_name="hero-phone" />
-  </address>
-</header>
+    <footer>
+      <address class="grid grid-cols-[auto_1fr] items-center gap-x-2">
+        <.address_item
+          href={"mailto:#{@contact_email}"}
+          value={@contact_email}
+          icon_name="hero-envelope"
+        />
+        <.address_item
+          href={"tel:#{@contact_number}"}
+          value={@contact_number}
+          icon_name="hero-phone"
+        />
+      </address>
+    </footer>
+  </article>
+</div>
