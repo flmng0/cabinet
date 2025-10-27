@@ -5,6 +5,7 @@ defmodule Cabinet.Schema.Client do
 
   schema "clients" do
     field :name, :string
+    field :shortcode, :string
 
     has_many :invoices, Invoice
 
