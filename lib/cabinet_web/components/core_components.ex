@@ -343,6 +343,8 @@ defmodule CabinetWeb.CoreComponents do
 
   slot :col, required: true do
     attr :label, :string
+    attr :header_class, :string
+    attr :data_class, :string
   end
 
   slot :action, doc: "the slot for showing user actions in the last table column"
@@ -357,7 +359,7 @@ defmodule CabinetWeb.CoreComponents do
     <table class="table table-zebra">
       <thead>
         <tr>
-          <th :for={col <- @col}>{col[:label]}</th>
+          <th :for={col <- @col} class={Map.get(col, :header_class)}>{col[:label]}</th>
           <th :if={@action != []}>
             <span class="sr-only">{gettext("Actions")}</span>
           </th>
@@ -368,7 +370,7 @@ defmodule CabinetWeb.CoreComponents do
           <td
             :for={col <- @col}
             phx-click={@row_click && @row_click.(row)}
-            class={@row_click && "hover:cursor-pointer"}
+            class={[@row_click && "hover:cursor-pointer", Map.get(col, :data_class)]}
           >
             {render_slot(col, @row_item.(row))}
           </td>

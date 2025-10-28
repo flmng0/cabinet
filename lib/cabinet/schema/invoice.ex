@@ -8,6 +8,8 @@ defmodule Cabinet.Schema.Invoice do
     field :term, :string
     field :due, :utc_datetime
 
+    field :refnum, :integer 
+
     has_many :units, Unit
     belongs_to :client, Client
 

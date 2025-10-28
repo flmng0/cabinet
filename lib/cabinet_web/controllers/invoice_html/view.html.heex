@@ -2,17 +2,60 @@
   <Layouts.flash_group flash={@flash} />
 
   <article class="w-full md:max-w-2xl mx-auto py-6 px-8 bg-base-100 shadow-sm rounded-md space-y-8">
-    <header>
-      <div class="flex flex-row-reverse justify-between items-end gap-4">
-        <h1 class="text-2xl bold uppercase text-right">{(@gst && "Tax") || ""} Invoice</h1>
-        <h2 class="text-xl flex flex-col">
-          <span class="text-base text-base-content/50 font-mono lowercase -mb-1">From</span>
-          {@contact_name}
-        </h2>
-      </div>
+    <header class="grid grid-cols-2 px-4 gap-y-6">
+      <h1 class="text-2xl bold uppercase text-center col-span-2 mb-6">
+        {if @gst, do: "Tax"} Invoice
+      </h1>
+
+      <section>
+        <.section_label>From</.section_label>
+        <address class="*:not-italic">
+          <p>{@contact_name}</p>
+        </address>
+      </section>
+
+      <section>
+        <.section_label>To</.section_label>
+        <address class="*:not-italic">
+          <p>{@invoice.client.name}</p>
+          <p :for={line <- @invoice.client.address}>{line}</p>
+        </address>
+      </section>
+
+      <section class="col-span-2">
+        <.section_label>Invoice Number</.section_label>
+        <p>INV-{String.pad_leading(to_string(@invoice.refnum), 4, "0")}</p>
+      </section>
+
+      <section>
+        <.section_label>Issue Date</.section_label>
+        <time>{@invoice.inserted_at}</time>
+      </section>
+
+      <section>
+        <.section_label>Due Date</.section_label>
+        <time>{@invoice.due}</time>
+        <%= if late?(@invoice) do %>
+          <em class="text-error">Late by {late_by(@invoice)} days.</em>
+        <% end %>
+      </section>
     </header>
 
-    <main>
+    <main class="flex flex-col gap-8">
+      <.table id="invoice_units" rows={@invoice.units}>
+        <:col :let={unit} label="Description">{unit.description}</:col>
+        <:col :let={unit} label="Quantity" data_class="text-center" header_class="text-center">
+          {unit.count}
+        </:col>
+        <:col :let={unit} label="Unit Price" data_class="text-center" header_class="text-center">
+          {unit.cost}
+        </:col>
+        <:col :let={unit} label="Amount" data_class="text-right" header_class="text-right">
+          {Decimal.mult(unit.cost, unit.count)}
+        </:col>
+      </.table>
+
+      <.invoice_total invoice={@invoice} gst?={@gst} />
     </main>
 
     <footer class="text-base-content/80">

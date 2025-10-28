@@ -7,6 +7,8 @@ defmodule Cabinet.Schema.Client do
     field :name, :string
     field :shortcode, :string
 
+    field :address, {:array, :string}
+
     has_many :invoices, Invoice
 
     timestamps()
