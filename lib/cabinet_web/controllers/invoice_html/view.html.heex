@@ -1,11 +1,22 @@
-<div class="min-h-screen grid place-items-center bg-base-300">
+<div class="min-h-screen max-w-screen grid place-items-center bg-base-300 md:py-12">
   <Layouts.flash_group flash={@flash} />
 
-  <article class="w-full md:max-w-2xl mx-auto py-6 px-8 bg-base-100 shadow-sm rounded-md space-y-8">
-    <header class="grid grid-cols-2 px-4 gap-y-6">
-      <h1 class="text-2xl bold uppercase text-center col-span-2 mb-6">
-        {if @gst, do: "Tax"} Invoice
+  <article class="w-full min-w-0 md:max-w-2xl mx-auto py-6 px-2 md:px-8 bg-base-100 shadow-sm rounded-md space-y-8">
+    <header class="grid grid-cols-1 md:grid-cols-2 px-4 gap-y-6">
+      <h1 class="text-2xl bold uppercase text-center md:col-span-2 mb-6">
+        {if @invoice.gst, do: "Tax"} Invoice
       </h1>
+
+      <section>
+        <.section_label>Amount Due</.section_label>
+        <var class="text-4xl font-medium not-italic">{@invoice.amount_due}</var>
+        <span class="align-top text-base-content/60">AUD</span>
+      </section>
+
+      <section>
+        <.section_label>Invoice Number</.section_label>
+        <p>INV-{String.pad_leading(to_string(@invoice.refnum), 4, "0")}</p>
+      </section>
 
       <section>
         <.section_label>From</.section_label>
@@ -22,45 +33,77 @@
         </address>
       </section>
 
-      <section class="col-span-2">
-        <.section_label>Invoice Number</.section_label>
-        <p>INV-{String.pad_leading(to_string(@invoice.refnum), 4, "0")}</p>
-      </section>
-
       <section>
         <.section_label>Issue Date</.section_label>
-        <time>{@invoice.inserted_at}</time>
+        <time>{format_date(@invoice.inserted_at)}</time>
       </section>
 
       <section>
         <.section_label>Due Date</.section_label>
-        <time>{@invoice.due}</time>
-        <%= if late?(@invoice) do %>
-          <em class="text-error">Late by {late_by(@invoice)} days.</em>
-        <% end %>
+        <.due_date invoice={@invoice} />
       </section>
     </header>
 
     <main class="flex flex-col gap-8">
-      <.table id="invoice_units" rows={@invoice.units}>
-        <:col :let={unit} label="Description">{unit.description}</:col>
-        <:col :let={unit} label="Quantity" data_class="text-center" header_class="text-center">
-          {unit.count}
-        </:col>
-        <:col :let={unit} label="Unit Price" data_class="text-center" header_class="text-center">
-          {unit.cost}
-        </:col>
-        <:col :let={unit} label="Amount" data_class="text-right" header_class="text-right">
-          {Decimal.mult(unit.cost, unit.count)}
-        </:col>
-      </.table>
+      <figure class="overflow-auto">
+        <.table id="invoice_units" rows={@invoice.units}>
+          <:col :let={unit} label="Description">{unit.description}</:col>
+          <:col :let={unit} label="Quantity" small_label="QTY" data_class="text-center" header_class="text-center">
+            {unit.count}
+          </:col>
+          <:col :let={unit} label="Unit Price" data_class="text-center" header_class="text-center">
+            {unit.cost}
+          </:col>
+          <:col :let={unit} label="Amount" data_class="text-right" header_class="text-right">
+            {Decimal.mult(unit.cost, unit.count)}
+          </:col>
+        </.table>
+        <figcaption class="text-sm text-base-content/60 text-center">
+          Itemised receipt of services rendered.
+        </figcaption>
+      </figure>
 
-      <.invoice_total invoice={@invoice} gst?={@gst} />
+      <div class="flex flex-col items-end">
+        <table class="table table-sm md:table-md w-fit text-base-content/60">
+          <tbody>
+            <tr>
+              <th span="row">Subtotal</th>
+              <td class="text-right">{@invoice.subtotal}</td>
+            </tr>
+            <tr>
+              <th span="row">
+                Total GST
+                ({if @invoice.gst, do: "10%", else: "0%"})
+              </th>
+              <td class="text-right">
+                <small :if={!@invoice.gst} class="text-xs">(no GST applied)</small>
+                {@invoice.total_gst}
+              </td>
+            </tr>
+            <tr class="bg-base-200 text-base-content">
+              <th span="row">Total amount due</th>
+              <td class="text-base md:text-lg text-right">{@invoice.amount_due}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <section class="px-4">
+        <.section_label>Payment</.section_label>
+        <address class="flex flex-col gap-1 mt-2 items-start w-fit">
+          <%= if @bsb && @account_number do %>
+            <span>BSB: {format_bsb(@bsb)}</span>
+            <span>Account Number: {@account_number}</span>
+            <span :if={@pay_id} class="mx-auto text-base-content/60">&mdash; OR &mdash;</span>
+          <% end %>
+          <span :if={@pay_id}>PayID: {@pay_id}</span>
+        </address>
+      </section>
     </main>
 
-    <footer class="text-base-content/80">
+    <footer class="text-base-content/80 px-4 text-center text-sm">
       <p>For inquiries about this invoice, contact {@contact_name} via:</p>
-      <address class="flex flex-col gap-1 pl-4 mt-2">
+      <address class="flex gap-4 justify-center pl-4 mt-2">
         <.icon_link
           href={"mailto:#{@contact_email}"}
           value={@contact_email}

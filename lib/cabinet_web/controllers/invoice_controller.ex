@@ -9,17 +9,33 @@ defmodule CabinetWeb.InvoiceController do
       due: ~D"2025-10-27",
       refnum: 1,
       inserted_at: ~D"2025-10-20",
+      gst: false,
       units: [
         %Unit{
           description: "Analysis of system requirements",
-          cost: Decimal.new(1, 4000, -2),
+          cost: Decimal.new("40.00"),
           count: 2
         },
         %Unit{
           description: "Development hours",
-          cost: Decimal.new(1, 4000, -2),
+          cost: Decimal.new("40.00"),
           count: 10
-        }
+        },
+        %Unit{
+          description: "Development hours",
+          cost: Decimal.new("40.00"),
+          count: 10
+        },
+        %Unit{
+          description: "Development hours",
+          cost: Decimal.new("40.00"),
+          count: 10
+        },
+        %Unit{
+          description: "Development hours",
+          cost: Decimal.new("40.00"),
+          count: 10
+        },
       ],
       client: %Client{
         name: "Chicken McMart",
@@ -30,6 +46,7 @@ defmodule CabinetWeb.InvoiceController do
         ]
       }
     }
+    |> Cabinet.Invoices.with_virtual_fields()
   end
 
   def assign_business(conn) do
@@ -42,7 +59,6 @@ defmodule CabinetWeb.InvoiceController do
     conn
     |> assign_business()
     |> assign(:invoice, mock_invoice())
-    |> assign(:gst, true)
     |> render(:view)
   end
 end

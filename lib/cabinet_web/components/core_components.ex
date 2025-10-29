@@ -31,6 +31,13 @@ defmodule CabinetWeb.CoreComponents do
 
   alias Phoenix.LiveView.JS
 
+  def format_date(%Date{} = date), do: Calendar.strftime(date, "%b %d, %Y")
+  def format_bsb(bsb) do
+    bsb
+    |> Integer.to_charlist()
+    |> Enum.chunk_every(3)
+    |> Enum.join(" ")
+  end
 
   ### CUSTOM
 
@@ -343,6 +350,7 @@ defmodule CabinetWeb.CoreComponents do
 
   slot :col, required: true do
     attr :label, :string
+    attr :small_label, :string
     attr :header_class, :string
     attr :data_class, :string
   end
@@ -356,10 +364,17 @@ defmodule CabinetWeb.CoreComponents do
       end
 
     ~H"""
-    <table class="table table-zebra">
+    <table class="table table-sm md:table-md table-zebra">
       <thead>
         <tr>
-          <th :for={col <- @col} class={Map.get(col, :header_class)}>{col[:label]}</th>
+          <th :for={col <- @col} class={Map.get(col, :header_class)}>
+            <%= if Map.has_key?(col, :small_label) do %>
+              <span class="md:hidden">{col[:small_label]}</span>
+              <span class="max-md:hidden">{col[:label]}</span>
+            <% else %>
+              {col[:label]}
+            <% end %>
+          </th>
           <th :if={@action != []}>
             <span class="sr-only">{gettext("Actions")}</span>
           </th>
