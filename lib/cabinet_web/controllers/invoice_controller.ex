@@ -1,6 +1,47 @@
 defmodule CabinetWeb.InvoiceController do
   use CabinetWeb, :controller
 
+  alias Cabinet.Invoices
+
+  def assign_business(conn) do
+    business = Application.fetch_env!(:cabinet, :business)
+
+    Enum.reduce(business, conn, fn {key, val}, conn -> assign(conn, key, val) end)
+  end
+
+  defp parse_refnum("INV-" <> num) do
+    with {num, ""} <- Integer.parse(num) do
+      {:ok, num}
+    else
+      _ -> :invalid_refnum
+    end
+  end
+
+  defp parse_refnum(_), do: :invalid_refnum
+
+  def view(conn, %{"client" => client, "refnum" => refnum} = _params) do
+    with {:ok, refnum} <- parse_refnum(refnum) do
+      if invoice = Invoices.get_invoice(client, refnum) do
+        conn
+        |> assign_business()
+        |> assign(:invoice, invoice)
+        |> render(:view)
+      else
+        raise CabinetWeb.NotFoundError, "No such invoice found"
+      end
+    else
+      :invalid_refnum ->
+        raise CabinetWeb.RequestError, "Failed to parse invoice reference number"
+    end
+  end
+
+  def view_mock(conn, _params) do
+    conn
+    |> assign_business()
+    |> assign(:invoice, mock_invoice())
+    |> render(:view)
+  end
+
   alias Cabinet.Schema.{Invoice, Client, Unit}
 
   defp mock_invoice() do
@@ -20,22 +61,7 @@ defmodule CabinetWeb.InvoiceController do
           description: "Development hours",
           cost: Decimal.new("40.00"),
           count: 10
-        },
-        %Unit{
-          description: "Development hours",
-          cost: Decimal.new("40.00"),
-          count: 10
-        },
-        %Unit{
-          description: "Development hours",
-          cost: Decimal.new("40.00"),
-          count: 10
-        },
-        %Unit{
-          description: "Development hours",
-          cost: Decimal.new("40.00"),
-          count: 10
-        },
+        }
       ],
       client: %Client{
         name: "Chicken McMart",
@@ -47,18 +73,5 @@ defmodule CabinetWeb.InvoiceController do
       }
     }
     |> Cabinet.Invoices.with_virtual_fields()
-  end
-
-  def assign_business(conn) do
-    business = Application.fetch_env!(:cabinet, :business)
-
-    Enum.reduce(business, conn, fn {key, val}, conn -> assign(conn, key, val) end)
-  end
-
-  def view(conn, _params) do
-    conn
-    |> assign_business()
-    |> assign(:invoice, mock_invoice())
-    |> render(:view)
   end
 end

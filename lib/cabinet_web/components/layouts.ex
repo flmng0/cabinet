@@ -72,6 +72,10 @@ defmodule CabinetWeb.Layouts do
     """
   end
 
+  slot :inner_block, required: true
+
+  def error(assigns)
+
   @doc """
   Shows the flash group with standard titles and content.
 

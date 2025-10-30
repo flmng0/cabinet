@@ -7,7 +7,7 @@ defmodule CabinetWeb.InvoiceHTML do
   use CabinetWeb, :html
 
   alias Cabinet.Schema.Invoice
-  
+
   slot :inner_block, required: true
 
   def section_label(assigns) do
@@ -30,11 +30,11 @@ defmodule CabinetWeb.InvoiceHTML do
 
   def due_date(assigns) do
     ~H"""
-    <span class="text-error">
+    <span class={@invoice.late? && "text-error"}>
       <%= if @invoice.late? do %>
         <time>{format_date(@invoice.due)}</time> &mdash; {@invoice.days_overdue} days overdue
       <% else %>
-        <time>{format_date(@invoice.due)}</time> &mdash
+        <time>{format_date(@invoice.due)}</time>
       <% end %>
     </span>
     """

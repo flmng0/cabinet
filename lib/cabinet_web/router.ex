@@ -17,7 +17,11 @@ defmodule CabinetWeb.Router do
   scope "/", CabinetWeb do
     pipe_through :browser
 
-    get "/invoice/:id", InvoiceController, :view
+    get "/invoice/:client/:refnum", InvoiceController, :view
+
+    if Application.compile_env(:cabinet, :dev_routes) do
+      get "/mock-invoice", InvoiceController, :view_mock
+    end
   end
 
   # Other scopes may use custom stacks.
