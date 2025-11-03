@@ -48,7 +48,13 @@
       <figure class="overflow-auto">
         <.table id="invoice_units" rows={@invoice.units}>
           <:col :let={unit} label="Description">{unit.description}</:col>
-          <:col :let={unit} label="Quantity" small_label="QTY" data_class="text-center" header_class="text-center">
+          <:col
+            :let={unit}
+            label="Quantity"
+            small_label="QTY"
+            data_class="text-center"
+            header_class="text-center"
+          >
             {unit.count}
           </:col>
           <:col :let={unit} label="Unit Price" data_class="text-center" header_class="text-center">
@@ -87,14 +93,14 @@
           </tbody>
         </table>
       </div>
-      
+
       <section class="px-4">
         <.section_label>Payment</.section_label>
         <address class="flex flex-col gap-1 mt-2 items-start w-fit">
           <%= if @bsb && @account_number do %>
             <span>BSB: {format_bsb(@bsb)}</span>
             <span>Account Number: {@account_number}</span>
-            <span :if={@pay_id} class="mx-auto text-base-content/60">&mdash; OR &mdash;</span>
+            <span :if={@pay_id} class="divider">OR</span>
           <% end %>
           <span :if={@pay_id}>PayID: {@pay_id}</span>
         </address>

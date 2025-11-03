@@ -72,6 +72,7 @@ defmodule CabinetWeb.Layouts do
     """
   end
 
+  attr :status, :any
   slot :inner_block, required: true
 
   def error(assigns)
