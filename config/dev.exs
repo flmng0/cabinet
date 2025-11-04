@@ -74,7 +74,9 @@ config :cabinet, CabinetWeb.Endpoint,
   ]
 
 # Enable dev routes for dashboard and mailbox
-config :cabinet, dev_routes: true
+config :cabinet, 
+  dev_routes: true,
+  superuser_email: "superuser@test.com"
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :default_formatter, format: "[$level] $message\n"

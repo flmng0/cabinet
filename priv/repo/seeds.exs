@@ -9,3 +9,11 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias Cabinet.Auth
+
+superuser_email = Application.compile_env!(:cabinet, :superuser_email)
+
+if nil = Auth.get_user_by_email(superuser_email) do
+  {:ok, superuser} = Auth.create_superuser(superuser_email)
+end

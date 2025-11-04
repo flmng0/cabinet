@@ -7,6 +7,19 @@
 # General application configuration
 import Config
 
+config :cabinet, :scopes,
+  user: [
+    default: true,
+    module: Cabinet.Auth.Scope,
+    assign_key: :current_scope,
+    access_path: [:user, :id],
+    schema_key: :user_id,
+    schema_type: :id,
+    schema_table: :users,
+    test_data_fixture: Cabinet.AuthFixtures,
+    test_setup_helper: :register_and_log_in_user
+  ]
+
 config :cabinet,
   ecto_repos: [Cabinet.Repo],
   generators: [timestamp_type: :utc_datetime]
