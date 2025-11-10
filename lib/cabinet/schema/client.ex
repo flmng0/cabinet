@@ -1,6 +1,7 @@
 defmodule Cabinet.Schema.Client do
   use Ecto.Schema
 
+  alias Cabinet.Auth.User
   alias Cabinet.Schema.Invoice
 
   schema "clients" do
@@ -9,6 +10,7 @@ defmodule Cabinet.Schema.Client do
 
     field :address, {:array, :string}
 
+    has_many :users, User
     has_many :invoices, Invoice
 
     timestamps()

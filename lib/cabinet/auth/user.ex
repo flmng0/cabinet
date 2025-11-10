@@ -8,6 +8,8 @@ defmodule Cabinet.Auth.User do
     field :confirmed_at, :utc_datetime
     field :authenticated_at, :utc_datetime, virtual: true
 
+    has_many :clients, Cabinet.Schema.Client
+    
     timestamps(type: :utc_datetime)
   end
 
