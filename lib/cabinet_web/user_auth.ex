@@ -279,6 +279,14 @@ defmodule CabinetWeb.UserAuth do
     end
   end
 
+  def require_superuser(conn, _opts) do
+    if conn.assigns.current_scope && conn.assigns.current_scope.user && conn.assigns.current_scope.user.superuser do
+      conn
+    else
+      raise Phoenix.Router.NoRouteError, conn: conn, router: CabinetWeb.Router
+    end
+  end
+
   defp maybe_store_return_to(%{method: "GET"} = conn) do
     put_session(conn, :user_return_to, current_path(conn))
   end

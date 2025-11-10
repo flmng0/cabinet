@@ -20,12 +20,20 @@ defmodule CabinetWeb.Router do
   scope "/", CabinetWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    get "/", InvoiceController, :view_mock
-
+    get "/", InvoiceController, :index
     get "/invoice/:client/:refnum", InvoiceController, :view
 
     if Application.compile_env(:cabinet, :dev_routes) do
       get "/mock-invoice", InvoiceController, :view_mock
+    end
+  end
+
+  scope "/admin", CabinetWeb do
+    pipe_through [:browser, :require_superuser]
+
+    live_session :require_superuser,
+      on_mount: [{CabinetWeb.UserAuth, :require_authenticated}] do
+      live "/", AdminLive, :home
     end
   end
 

@@ -1,12 +1,12 @@
-defmodule CabinetWeb.RequestError do
-  defexception [:message, plug_status: 400]
-end
-
-defmodule CabinetWeb.NotFoundError do
-  defexception [:message, plug_status: 404]
-end
-
 defmodule CabinetWeb do
+  defmodule RequestError do
+    defexception [:message, plug_status: 400]
+  end
+
+  defmodule NotFoundError do
+    defexception [:message, plug_status: 404]
+  end
+
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, components, channels, and so on.
