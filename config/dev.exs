@@ -32,7 +32,7 @@ config :cabinet, CabinetWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: String.to_integer(System.get_env("PORT") || "4000")],
   check_origin: false,
   code_reloader: true,
-  debug_errors: false,
+  debug_errors: true,
   secret_key_base: "RqTOjfEO5rutHM8k8IWrTsCboTJlWn3tALQrIfqIZfkYKRuWXMi73JAIxJz6jLDj",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:cabinet, ~w(--sourcemap=inline --watch)]},
