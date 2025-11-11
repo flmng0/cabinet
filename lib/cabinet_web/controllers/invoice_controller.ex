@@ -3,21 +3,9 @@ defmodule CabinetWeb.InvoiceController do
 
   alias Cabinet.Invoices
 
-  def assign_business(conn) do
-    business = Application.fetch_env!(:cabinet, :business)
-
-    Enum.reduce(business, conn, fn {key, val}, conn -> assign(conn, key, val) end)
+  def index(conn, _params) do
+    view_mock(conn, _params)
   end
-
-  defp parse_refnum("INV-" <> num) do
-    with {num, ""} <- Integer.parse(num) do
-      {:ok, num}
-    else
-      _ -> :invalid_refnum
-    end
-  end
-
-  defp parse_refnum(_), do: :invalid_refnum
 
   def view(conn, %{"client" => client, "refnum" => refnum} = _params) do
     with {:ok, refnum} <- parse_refnum(refnum) do
@@ -41,6 +29,22 @@ defmodule CabinetWeb.InvoiceController do
     |> assign(:invoice, mock_invoice())
     |> render(:view)
   end
+
+  def assign_business(conn) do
+    business = Application.fetch_env!(:cabinet, :business)
+
+    Enum.reduce(business, conn, fn {key, val}, conn -> assign(conn, key, val) end)
+  end
+
+  defp parse_refnum("INV-" <> num) do
+    with {num, ""} <- Integer.parse(num) do
+      {:ok, num}
+    else
+      _ -> :invalid_refnum
+    end
+  end
+
+  defp parse_refnum(_), do: :invalid_refnum
 
   alias Cabinet.Schema.{Invoice, Client, Unit}
 
