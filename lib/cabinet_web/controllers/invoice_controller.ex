@@ -4,7 +4,11 @@ defmodule CabinetWeb.InvoiceController do
   alias Cabinet.Invoices
 
   def index(conn, _params) do
-    view_mock(conn, _params)
+    if conn.assigns.current_scope.user.superuser do
+      redirect(conn, to: ~p"/admin")
+    else
+      view_mock(conn, _params)
+    end
   end
 
   def view(conn, %{"client" => client, "refnum" => refnum} = _params) do
