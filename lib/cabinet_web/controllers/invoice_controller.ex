@@ -1,14 +1,12 @@
 defmodule CabinetWeb.InvoiceController do
   use CabinetWeb, :controller
 
+  @refnum_prefix "INV-"
   alias Cabinet.Invoices
 
   def index(conn, _params) do
-    if conn.assigns.current_scope.user.superuser do
-      redirect(conn, to: ~p"/admin")
-    else
-      view_mock(conn, _params)
-    end
+    # Cabinet.Invoices.get_invoices(conn.assigns.current_scope)
+    view_mock(conn, _params)
   end
 
   def view(conn, %{"client" => client, "refnum" => refnum} = _params) do
@@ -16,7 +14,7 @@ defmodule CabinetWeb.InvoiceController do
       if invoice = Invoices.get_invoice(client, refnum) do
         conn
         |> assign_business()
-        |> assign(:invoice, invoice)
+        |> assign_invoice(invoice)
         |> render(:view)
       else
         raise CabinetWeb.NotFoundError, "No such invoice found"
@@ -30,17 +28,23 @@ defmodule CabinetWeb.InvoiceController do
   def view_mock(conn, _params) do
     conn
     |> assign_business()
-    |> assign(:invoice, mock_invoice())
+    |> assign_invoice(mock_invoice())
     |> render(:view)
   end
 
-  def assign_business(conn) do
+  defp assign_invoice(conn, %Cabinet.Schema.Invoice{refnum: refnum} = invoice) do
+    conn
+    |> assign(:invoice, invoice)
+    |> assign(:page_title, CabinetWeb.CoreComponents.format_refnum(refnum))
+  end
+
+  defp assign_business(conn) do
     business = Application.fetch_env!(:cabinet, :business)
 
     Enum.reduce(business, conn, fn {key, val}, conn -> assign(conn, key, val) end)
   end
 
-  defp parse_refnum("INV-" <> num) do
+  defp parse_refnum(@refnum_prefix <> num) do
     with {num, ""} <- Integer.parse(num) do
       {:ok, num}
     else

@@ -11,6 +11,9 @@ defmodule CabinetWeb.UserLive.Login do
         <div class="text-center">
           <.header>
             <p>Log in</p>
+            <:subtitle :if={!@current_scope}>
+              Please log in to view your invoices.
+            </:subtitle>
             <:subtitle :if={@current_scope}>
               You need to reauthenticate to perform sensitive actions on your account.
             </:subtitle>
@@ -28,6 +31,7 @@ defmodule CabinetWeb.UserLive.Login do
         </div>
 
         <.form
+          :if={!@submitted}
           :let={f}
           for={@form}
           id="login_form"
@@ -47,6 +51,14 @@ defmodule CabinetWeb.UserLive.Login do
             Log in with email <span aria-hidden="true">→</span>
           </.button>
         </.form>
+
+        <div :if={@submitted} class="alert alert-success">
+          <.icon name="hero-check-circle" class="size-6 shrink-0" />
+          <div>
+            <p class="text-lg font-mono">Log-in Submitted Successfully</p>
+            <p>If your email is in our system, you will receive instructions for logging in shortly.</p>
+          </div>
+        </div>
       </div>
     </Layouts.app>
     """
@@ -59,8 +71,13 @@ defmodule CabinetWeb.UserLive.Login do
         get_in(socket.assigns, [:current_scope, Access.key(:user), Access.key(:email)])
 
     form = to_form(%{"email" => email}, as: "user")
+    title = if socket.assigns.current_scope do
+      "Re-Authenticate"
+    else
+      "Log In"
+    end
 
-    {:ok, assign(socket, form: form, trigger_submit: false)}
+    {:ok, assign(socket, form: form, submitted: false, page_title: title)}
   end
 
   @impl true
@@ -72,13 +89,7 @@ defmodule CabinetWeb.UserLive.Login do
       )
     end
 
-    info =
-      "If your email is in our system, you will receive instructions for logging in shortly."
-
-    {:noreply,
-     socket
-     |> put_flash(:info, info)
-     |> push_navigate(to: ~p"/users/log-in")}
+    {:noreply, assign(socket, form: nil, submitted: true)}
   end
 
   defp local_mail_adapter? do

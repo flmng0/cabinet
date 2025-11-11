@@ -73,8 +73,9 @@ defmodule CabinetWeb.UserLive.Confirmation do
     if user = Auth.get_user_by_magic_link_token(token) do
       form = to_form(%{"token" => token}, as: "user")
 
-      {:ok, assign(socket, user: user, form: form, trigger_submit: false),
-       temporary_assigns: [form: nil]}
+      socket = assign(socket, user: user, form: form, trigger_submit: false, page_title: "Welcome")
+
+      {:ok, socket, temporary_assigns: [form: nil]}
     else
       {:ok,
        socket

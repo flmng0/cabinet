@@ -17,7 +17,7 @@
 
       <section>
         <.section_label>Invoice Number</.section_label>
-        <p>INV-{String.pad_leading(to_string(@invoice.refnum), 4, "0")}</p>
+        <p>{format_refnum(@invoice.refnum)}</p>
       </section>
 
       <section>

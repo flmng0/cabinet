@@ -33,8 +33,11 @@ defmodule CabinetWeb.CoreComponents do
 
   def format_date(%Date{} = date), do: Calendar.strftime(date, "%b %d, %Y")
 
-
   defp remove_spaces(text) when is_binary(text), do: Regex.replace(~r/\s/u, text, "")
+
+  def format_refnum(num) when is_integer(num) do
+    "INV-" <> String.pad_leading(to_string(num), 4, "0")
+  end
 
   def format_bsb(bsb) when is_binary(bsb) do 
     bsb
