@@ -2,7 +2,7 @@ import Config
 
 config :cabinet, :business,
   gst: false,
-  abn: nil,
+  abn: "11 234 567 890",
   pay_id: "0400000000",
   bsb: 123_456,
   account_number: 123_456_789,

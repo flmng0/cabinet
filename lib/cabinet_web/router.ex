@@ -23,9 +23,6 @@ defmodule CabinetWeb.Router do
     get "/", InvoiceController, :index
     get "/invoice/:client/:refnum", InvoiceController, :view
 
-    if Application.compile_env(:cabinet, :dev_routes) do
-      get "/mock-invoice", InvoiceController, :view_mock
-    end
   end
 
   scope "/admin", CabinetWeb do
@@ -54,6 +51,7 @@ defmodule CabinetWeb.Router do
     scope "/dev" do
       pipe_through :browser
 
+      get "/mock-invoice", CabinetWeb.InvoiceController, :view_mock
       live_dashboard "/dashboard", metrics: CabinetWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end

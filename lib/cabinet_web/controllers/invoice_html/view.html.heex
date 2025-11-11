@@ -22,6 +22,7 @@
         <.section_label>From</.section_label>
         <address class="*:not-italic">
           <p>{@contact_name}</p>
+          <p :if={@abn}>ABN: {format_abn(@abn)}</p>
         </address>
       </section>
 

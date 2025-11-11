@@ -116,9 +116,14 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Req
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+  config :cabinet, Cabinet.Mailer,
+    adapter: Swoosh.Adapters.SMTP2GO,
+    api_key: System.get_env("SMTP2GO_API_KEY")
+
+  gst = (System.get_env("BUSINESS_GST") |> String.downcase()) == "true"
 
   config :cabinet, :business,
-    gst: System.get_env("BUSINESS_GST"),
+    gst: gst,
     abn: System.get_env("BUSINESS_ABN"),
     pay_id: System.get_env("BUSINESS_PAY_ID"),
     bsb: System.get_env("BUSINESS_BSB"),
