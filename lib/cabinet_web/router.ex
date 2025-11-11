@@ -22,7 +22,6 @@ defmodule CabinetWeb.Router do
 
     get "/", InvoiceController, :index
     get "/invoice/:client/:refnum", InvoiceController, :view
-
   end
 
   scope "/admin", CabinetWeb do
@@ -78,6 +77,7 @@ defmodule CabinetWeb.Router do
       live "/users/log-in/:token", UserLive.Confirmation, :new
     end
 
+    post "/users/log-in", UserSessionController, :create
     delete "/users/log-out", UserSessionController, :delete
   end
 end
