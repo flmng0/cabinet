@@ -6,12 +6,12 @@ defmodule Cabinet.Auth.UserNotifier do
 
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do
-    %{"contact_name" => name, "contact_email" => email_address} = Application.fetch_env!(:cabinet, :business)
+    business = Application.fetch_env!(:cabinet, :business)
 
     email =
       new()
       |> to(recipient)
-      |> from({name, email_address})
+      |> from({business[:contact_name], business[:contact_email]})
       |> subject(subject)
       |> text_body(body)
 

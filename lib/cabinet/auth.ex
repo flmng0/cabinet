@@ -62,10 +62,10 @@ defmodule Cabinet.Auth do
     |> Repo.insert()
   end
 
-  def create_superuser(email) do
-    %User{superuser: true}
-    |> User.email_changeset(%{email: email})
-    |> Repo.insert()
+  def create_superuser!(email) do
+    %User{superuser: true, email: email}
+    |> User.confirm_changeset()
+    |> Repo.insert!()
   end
 
   ## Settings

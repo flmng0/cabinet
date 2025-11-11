@@ -14,6 +14,6 @@ alias Cabinet.Auth
 
 superuser_email = Application.compile_env!(:cabinet, :superuser_email)
 
-if nil = Auth.get_user_by_email(superuser_email) do
-  {:ok, _superuser} = Auth.create_superuser(superuser_email)
+if is_nil(Auth.get_user_by_email(superuser_email)) do
+  _superuser = Auth.create_superuser!(superuser_email)
 end
