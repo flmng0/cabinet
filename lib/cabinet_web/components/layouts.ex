@@ -31,9 +31,33 @@ defmodule CabinetWeb.Layouts do
     default: nil,
     doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
 
+  attr :class, :string, default: ""
+
   slot :inner_block, required: true
 
   def app(assigns) do
+    ~H"""
+    <div class="flex flex-col min-h-screen">
+      <.app_header current_scope={@current_scope} />
+
+      <main class={["px-4 py-20 sm:px-6 lg:px-8 bg-base-200 grow", @class]}>
+        <div class="mx-auto max-w-2xl space-y-4">
+          {render_slot(@inner_block)}
+        </div>
+      </main>
+    </div>
+
+
+    <.flash_group flash={@flash} />
+    """
+  end
+
+  @doc """
+  App header, including conditional user settings / log-out button.
+  """
+  attr :current_scope, :map, default: nil
+
+  def app_header(assigns) do
     ~H"""
     <header class="navbar px-4 sm:px-6 lg:px-8">
       <.link href={~p"/"}>Home</.link>
@@ -56,14 +80,6 @@ defmodule CabinetWeb.Layouts do
         <% end %>
       </ul>
     </header>
-
-    <main class="px-4 py-20 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl space-y-4">
-        {render_slot(@inner_block)}
-      </div>
-    </main>
-
-    <.flash_group flash={@flash} />
     """
   end
 
