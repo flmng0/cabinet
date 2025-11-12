@@ -17,7 +17,7 @@ defmodule Cabinet.Schema.Client do
     timestamps()
   end
 
-  def create_changeset(client, attrs) do
+  def changeset(client, attrs) do
     client
     |> cast(attrs, [:name, :shortcode, :address])
     |> validate_required([:name, :shortcode])

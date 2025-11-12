@@ -1,0 +1,25 @@
+<Layouts.admin flash={@flash} current_scope={@current_scope}>
+  <.header>
+    <p>Registered Clients</p>
+
+    <:actions>
+      <.button patch={~p"/admin/clients/new"}>New Client</.button>
+    </:actions>
+  </.header>
+
+  <.table id="client_list" rows={@streams[:clients]}>
+    <:col :let={{_, c}} label="Shortcode">{c.shortcode}</:col>
+    <:col :let={{_, c}} label="Name">{c.name}</:col>
+  </.table>
+
+  <dialog class="modal" open={@live_action == :new}>
+    <div class="modal-box">
+      <.live_component
+        module={CabinetWeb.AdminLive.Clients.FormComponent}
+        id="new-client-form"
+        cancel={JS.patch(~p"/admin/clients")}
+      />
+    </div>
+    <.link patch={~p"/admin/clients"} class="modal-backdrop">Close</.link>
+  </dialog>
+</Layouts.admin>
