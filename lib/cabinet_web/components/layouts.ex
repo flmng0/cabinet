@@ -47,20 +47,28 @@ defmodule CabinetWeb.Layouts do
       </main>
     </div>
 
-
     <.flash_group flash={@flash} />
     """
   end
+
+  def admin(assigns), do: app(assigns)
 
   @doc """
   App header, including conditional user settings / log-out button.
   """
   attr :current_scope, :map, default: nil
 
+  slot :inner_block, required: false
+
   def app_header(assigns) do
     ~H"""
     <header class="navbar px-4 sm:px-6 lg:px-8">
-      <.link href={~p"/"}>Home</.link>
+      <div class="flex gap-4">
+        <.link href={~p"/"}>Home</.link>
+        <.link :if={@current_scope && @current_scope.user.superuser} href="/admin">
+          Admin
+        </.link>
+      </div>
 
       <ul class="menu menu-horizontal w-full relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
         <%= if @current_scope do %>

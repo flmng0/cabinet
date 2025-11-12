@@ -7,6 +7,7 @@ defmodule Cabinet.Invoices do
   import Ecto.Query, only: [from: 2]
 
   alias Cabinet.Schema
+  alias Cabinet.Auth.{Scope, User}
 
   def with_virtual_fields(nil), do: nil
 
@@ -38,6 +39,14 @@ defmodule Cabinet.Invoices do
         total_gst: total_gst,
         amount_due: amount_due
     }
+  end
+
+  def list_clients(%Scope{user: %User{superuser: true}}) do
+    Repo.all(Schema.Client)
+  end
+
+  def list_clients(_) do
+    []
   end
 
   def get_invoice(client, refnum) do
