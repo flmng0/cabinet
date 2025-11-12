@@ -7,6 +7,9 @@ defmodule Cabinet.Invoices do
   import Ecto.Query, only: [from: 2]
 
   alias Cabinet.Schema
+  alias Cabinet.Auth.{Scope, User}
+
+  import Cabinet.Auth.Guards
 
   def with_virtual_fields(nil), do: nil
 
@@ -40,16 +43,38 @@ defmodule Cabinet.Invoices do
     }
   end
 
-  def get_invoice(client, refnum) do
+  def list_clients(%Scope{user: user}, preload? \\ false) when is_superuser(user) do
     query =
-      from e in Schema.Invoice,
-        join: c in assoc(e, :client),
-        on: e.client_id == c.id,
-        where: c.shortcode == ^client and e.refnum == ^refnum,
-        preload: [:units, client: c]
+      if preload? do
+        from c in Schema.Client, preload: [:users, :invoices]
+      else
+        Schema.Client
+      end
+
+    Repo.all(query)
+  end
+
+  def create_client(%Scope{user: user}, attrs) when is_superuser(user) do
+    %Schema.Client{}
+    |> Schema.Client.create_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def upsert_client(%Scope{user: user}, changeset) when is_superuser(user) do
+    Repo.insert_or_update(changeset)
+  end
+
+  def get_invoice(%Scope{user: user}, refnum) when is_superuser(user) do
+    Repo.get_by(Schema.Invoice, refnum: refnum) |> with_virtual_fields()
+  end
+
+  def get_invoice(%Scope{user: user}, refnum) do
+    %User{client_id: client_id} = Repo.preload(user, [:client])
+
+    query = from e in Schema.Invoice, where: e.client_id == ^client_id, preload: [:units]
 
     query
-    |> Repo.one()
+    |> Repo.get_by(refnum: refnum)
     |> with_virtual_fields()
   end
 end

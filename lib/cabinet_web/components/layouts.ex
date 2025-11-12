@@ -47,10 +47,11 @@ defmodule CabinetWeb.Layouts do
       </main>
     </div>
 
-
     <.flash_group flash={@flash} />
     """
   end
+
+  def admin(assigns), do: app(assigns)
 
   @doc """
   App header, including conditional user settings / log-out button.
