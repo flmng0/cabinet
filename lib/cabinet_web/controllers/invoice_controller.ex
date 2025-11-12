@@ -78,10 +78,7 @@ defmodule CabinetWeb.InvoiceController do
       client: %Client{
         name: "Chicken McMart",
         shortcode: "chmm",
-        address: [
-          "32 Fake Street",
-          "SUBITHA WZ 2025"
-        ]
+        address: "32 Fake Street\nSUBITHA WZ 2025"
       }
     }
     |> Cabinet.Invoices.with_virtual_fields()

@@ -6,11 +6,11 @@ defmodule Cabinet.Repo.Migrations.Invoices do
       add :name, :string, null: false
       add :shortcode, :string, null: false
 
-      add :address, {:array, :string}
+      add :address, :string
 
       timestamps()
     end
-    
+
     create table(:invoices) do
       add :term, :string
       add :due, :utc_datetime
