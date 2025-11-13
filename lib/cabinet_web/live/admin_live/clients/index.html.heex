@@ -7,7 +7,7 @@
     </:actions>
   </.header>
 
-  <.table id="client_list" rows={@streams[:clients]}>
+  <.table id="client_list" rows={@streams.clients}>
     <:col :let={{_, c}} label="Shortcode">{c.shortcode}</:col>
     <:col :let={{_, c}} label="Name">{c.name}</:col>
   </.table>
@@ -22,4 +22,6 @@
     </div>
     <.link patch={~p"/admin/clients"} class="modal-backdrop">Close</.link>
   </dialog>
+
+  <:util click="clear-all">Clear Clients</:util>
 </Layouts.admin>

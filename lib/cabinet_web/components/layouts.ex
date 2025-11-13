@@ -51,7 +51,41 @@ defmodule CabinetWeb.Layouts do
     """
   end
 
-  def admin(assigns), do: app(assigns)
+  attr :rest, :global, include: ~w(flash current_scope class)
+
+  slot :inner_block, required: true
+
+  slot :util, doc: "action rendered when config setting :dev_utils is enabled" do
+    attr :click, :any
+  end
+
+  def admin(assigns) do
+    ~H"""
+    <.app {@rest}>
+      {render_slot(@inner_block)}
+
+      <div
+        :if={Application.fetch_env!(:cabinet, :dev_utils) && @util != []}
+        class="rounded-md border border-secondary-content bg-secondary text-secondary-content p-4 mt-12"
+      >
+        <.header>
+          <p>Developer Utilities</p>
+          <:subtitle>
+            <p>Quick utilities only available in the development environment.</p>
+          </:subtitle>
+        </.header>
+
+        <ul class="flex flex-row flex-wrap">
+          <li :for={item <- @util}>
+            <.button phx-click={item[:click]} class="btn btn-soft btn-info">
+              {render_slot(item)}
+            </.button>
+          </li>
+        </ul>
+      </div>
+    </.app>
+    """
+  end
 
   @doc """
   App header, including conditional user settings / log-out button.

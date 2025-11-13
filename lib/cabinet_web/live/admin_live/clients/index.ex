@@ -34,4 +34,13 @@ defmodule CabinetWeb.AdminLive.Clients.Index do
       _ -> {:noreply, socket}
     end
   end
+
+  if Application.compile_env(:cabinet, :dev_utils) do
+    @impl true
+    def handle_event("clear-all", _params, socket) do
+      Cabinet.Repo.delete_all(Cabinet.Schema.Client)
+
+      {:noreply, stream(socket, :clients, [], reset: true)}
+    end
+  end
 end
