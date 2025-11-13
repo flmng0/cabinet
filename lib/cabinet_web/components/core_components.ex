@@ -395,45 +395,53 @@ defmodule CabinetWeb.CoreComponents do
       end
 
     ~H"""
-    <table class="table table-sm md:table-md table-zebra">
-      <thead>
-        <tr>
-          <th :for={col <- @col} class={Map.get(col, :header_class)}>
-            <%= if Map.has_key?(col, :small_label) do %>
-              <span class="md:hidden">{col[:small_label]}</span>
-              <span class="max-md:hidden">{col[:label]}</span>
-            <% else %>
-              {col[:label]}
-            <% end %>
-          </th>
-          <th :if={@action != []}>
-            <span class="sr-only">{gettext("Actions")}</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody id={@id} phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}>
-        <tr
-          :for={row <- @rows}
-          id={@row_id && @row_id.(row)}
-          class={[@row_click && "hover:bg-base-300"]}
-        >
-          <td
-            :for={col <- @col}
-            phx-click={@row_click && @row_click.(row)}
-            class={[@row_click && "hover:cursor-pointer", Map.get(col, :data_class)]}
-          >
-            {render_slot(col, @row_item.(row))}
-          </td>
-          <td :if={@action != []} class="w-0 font-semibold">
-            <div class="flex gap-4">
-              <%= for action <- @action do %>
-                {render_slot(action, @row_item.(row))}
+    <div>
+      <table class="table table-sm md:table-md table-zebra peer">
+        <thead>
+          <tr>
+            <th :for={col <- @col} class={Map.get(col, :header_class)}>
+              <%= if Map.has_key?(col, :small_label) do %>
+                <span class="md:hidden">{col[:small_label]}</span>
+                <span class="max-md:hidden">{col[:label]}</span>
+              <% else %>
+                {col[:label]}
               <% end %>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            </th>
+            <th :if={@action != []}>
+              <span class="sr-only">{gettext("Actions")}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody
+          id={@id}
+          phx-update={is_struct(@rows, Phoenix.LiveView.LiveStream) && "stream"}
+        >
+          <tr
+            :for={row <- @rows}
+            id={@row_id && @row_id.(row)}
+            class={[@row_click && "hover:bg-base-300"]}
+          >
+            <td
+              :for={col <- @col}
+              phx-click={@row_click && @row_click.(row)}
+              class={[@row_click && "hover:cursor-pointer", Map.get(col, :data_class)]}
+            >
+              {render_slot(col, @row_item.(row))}
+            </td>
+            <td :if={@action != []} class="w-0 font-semibold">
+              <div class="flex gap-4">
+                <%= for action <- @action do %>
+                  {render_slot(action, @row_item.(row))}
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="peer-has-[td]:hidden w-full text-center p-4 text-base-content/80">
+        <p>No items</p>
+      </div>
+    </div>
     """
   end
 
