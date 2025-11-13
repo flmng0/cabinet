@@ -37,6 +37,7 @@ defmodule CabinetWeb.Router do
 
         live "/:id", Show, :view
         live "/:id/edit", Show, :edit
+        live "/:id/new-invoice", Show, :new_invoice
       end
     end
   end

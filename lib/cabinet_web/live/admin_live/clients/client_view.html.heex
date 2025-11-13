@@ -6,3 +6,24 @@
     <.button variant="primary" patch={~p"/admin/clients/#{@client.id}/edit"}>Edit</.button>
   </:actions>
 </.header>
+
+<section>
+  <h2 class="text-md font-mono leading-4 pb-4">Invoices</h2>
+
+  <.table
+    id="invoice_list"
+    rows={@invoices}
+  >
+    <:col :let={{_, i}} label="#">{i.refnum}</:col>
+    <:col :let={{_, i}} label="Due Date">{i.due}</:col>
+    <:col :let={{_, i}} label="Status">
+      <p :if={i.late?} class="text-warning">Late</p>
+      <p :if={!i.late?} class="text-base-content">Not Due</p>
+      <%!-- <p :if={!i.paid?} class="text-success">Paid</p> --%>
+    </:col>
+
+    <:table_action>
+      <.button patch={~p"/admin/clients/#{@client.id}/new-invoice"}>Create Invoice</.button>
+    </:table_action>
+  </.table>
+</section>

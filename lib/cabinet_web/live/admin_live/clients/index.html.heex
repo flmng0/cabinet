@@ -2,9 +2,7 @@
   <.header>
     <p>Registered Clients</p>
 
-    <:actions>
-      <.button patch={~p"/admin/clients/new"}>New Client</.button>
-    </:actions>
+    <:actions></:actions>
   </.header>
 
   <.table
@@ -14,6 +12,9 @@
   >
     <:col :let={{_, c}} label="Shortcode">{c.shortcode}</:col>
     <:col :let={{_, c}} label="Name">{c.name}</:col>
+    <:table_action>
+      <.button patch={~p"/admin/clients/new"}>New Client</.button>
+    </:table_action>
   </.table>
 
   <dialog class="modal" open={@live_action == :new}>

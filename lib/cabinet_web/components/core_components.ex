@@ -391,6 +391,8 @@ defmodule CabinetWeb.CoreComponents do
     attr :data_class, :string
   end
 
+  slot :table_action
+
   slot :action, doc: "the slot for showing user actions in the last table column"
 
   def table(assigns) do
@@ -445,6 +447,12 @@ defmodule CabinetWeb.CoreComponents do
       </table>
       <div class="peer-has-[td]:hidden w-full text-center p-4 text-base-content/80">
         <p>No items</p>
+      </div>
+
+      <div :if={@table_action != []} class="w-full pt-4 flex justify-end gap-4">
+        <%= for action <- @table_action do %>
+          {render_slot(action)}
+        <% end %>
       </div>
     </div>
     """
