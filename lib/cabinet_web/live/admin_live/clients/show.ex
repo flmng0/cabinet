@@ -27,6 +27,13 @@ defmodule CabinetWeb.AdminLive.Clients.Show do
   def render(assigns) do
     ~H"""
     <Layouts.admin flash={@flash} current_scope={@current_scope}>
+      <nav class="pb-4">
+        <.link navigate={~p"/admin/clients"} class="text-secondary text-sm group relative">
+          <.icon name="hero-arrow-long-left" class="size-4 -translate-y-1/2 top-1/2 group-hover:-translate-x-2 -translate-x-1 absolute right-full" />
+          Return to Clients
+        </.link>
+      </nav>
+
       <.client_view :if={@live_action == :view} client={@client} />
       <.client_edit :if={@live_action == :edit} client={@client} />
     </Layouts.admin>

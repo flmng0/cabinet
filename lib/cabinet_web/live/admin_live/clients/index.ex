@@ -27,7 +27,7 @@ defmodule CabinetWeb.AdminLive.Clients.Index do
       socket =
         socket
         |> stream_insert(:clients, client)
-        |> push_patch(to: ~p"/admin/clients")
+        |> push_patch(to: ~p"/admin/clients/#{client.id}")
 
       {:noreply, socket}
     else
