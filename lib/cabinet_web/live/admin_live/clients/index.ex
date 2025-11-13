@@ -22,7 +22,7 @@ defmodule CabinetWeb.AdminLive.Clients.Index do
   end
 
   @impl true
-  def handle_info({:create_client, attrs}, socket) do
+  def handle_info({:submit_client, attrs}, socket) do
     with {:ok, client} <- Invoices.create_client(socket.assigns.current_scope, attrs) do
       socket =
         socket

@@ -1,0 +1,8 @@
+<.header>
+  {@client.name}
+  <:subtitle>{@client.shortcode}</:subtitle>
+
+  <:actions>
+    <.button variant="primary" patch={~p"/admin/clients/#{@client.id}/edit"}>Edit</.button>
+  </:actions>
+</.header>

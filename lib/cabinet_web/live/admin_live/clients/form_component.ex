@@ -34,8 +34,8 @@ defmodule CabinetWeb.AdminLive.Clients.FormComponent do
   @impl true
   def update(assigns, socket) do
     client =
-      if assigns[:client_id] do
-        Invoices.get_client(socket.assigns.current_scope, assigns.client_id)
+      if assigns[:client] do
+        assigns.client
       else
         %Client{}
       end
@@ -64,7 +64,7 @@ defmodule CabinetWeb.AdminLive.Clients.FormComponent do
   def handle_event("submit", %{"client" => client_params}, socket) do
     case Client.changeset(socket.assigns.client, client_params) do
       %{valid?: true} = _changeset ->
-        send(self(), {:create_client, client_params})
+        send(self(), {:submit_client, client_params})
         {:noreply, socket}
 
       changeset ->

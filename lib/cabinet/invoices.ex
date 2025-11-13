@@ -60,8 +60,10 @@ defmodule Cabinet.Invoices do
     |> Repo.insert()
   end
 
-  def upsert_client(%Scope{user: user}, changeset) when is_superuser(user) do
-    Repo.insert_or_update(changeset)
+  def update_client(%Scope{user: user}, %Schema.Client{} = client, attrs) when is_superuser(user) do
+    client
+    |> Schema.Client.changeset(attrs)
+    |> Repo.update()
   end
 
   def get_client(%Scope{user: user}, id) when is_superuser(user) do
