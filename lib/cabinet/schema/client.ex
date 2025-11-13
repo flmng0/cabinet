@@ -22,6 +22,5 @@ defmodule Cabinet.Schema.Client do
     |> cast(attrs, [:name, :shortcode, :address])
     |> validate_required([:name, :shortcode])
     |> validate_format(:shortcode, ~r/^\S+$/, message: "cannot include spaces")
-    |> cast_assoc(:users, with: &User.email_changeset/2)
   end
 end
