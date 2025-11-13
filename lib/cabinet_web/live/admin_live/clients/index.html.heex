@@ -7,13 +7,18 @@
     </:actions>
   </.header>
 
-  <.table id="client_list" rows={@streams.clients}>
+  <.table
+    id="client_list"
+    rows={@streams.clients}
+    row_click={fn {_, c} -> JS.navigate(~p"/admin/clients/#{c.id}") end}
+  >
     <:col :let={{_, c}} label="Shortcode">{c.shortcode}</:col>
     <:col :let={{_, c}} label="Name">{c.name}</:col>
   </.table>
 
   <dialog class="modal" open={@live_action == :new}>
     <div class="modal-box">
+      <.header>Create New Client</.header>
       <.live_component
         module={CabinetWeb.AdminLive.Clients.FormComponent}
         id="new-client-form"

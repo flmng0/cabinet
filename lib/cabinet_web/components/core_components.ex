@@ -70,6 +70,9 @@ defmodule CabinetWeb.CoreComponents do
     Enum.join(parts, " ")
   end
 
+  def address_lines(nil), do: []
+  def address_lines(address), do: String.split(address, "\n", trim: true)
+
   ### CUSTOM
 
   attr :href, :string
@@ -351,8 +354,10 @@ defmodule CabinetWeb.CoreComponents do
         <h1 class="text-lg font-semibold leading-8">
           {render_slot(@inner_block)}
         </h1>
-        <p :if={@subtitle != []} class="text-sm text-base-content/70">
-          {render_slot(@subtitle)}
+        <p class="text-sm text-base-content/70">
+          <%= if @subtitle != [] do %>
+            {render_slot(@subtitle)}
+          <% end %>
         </p>
       </div>
       <div class="flex-none">{render_slot(@actions)}</div>

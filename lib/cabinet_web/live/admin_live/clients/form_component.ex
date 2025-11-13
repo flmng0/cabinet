@@ -8,10 +8,6 @@ defmodule CabinetWeb.AdminLive.Clients.FormComponent do
   def render(assigns) do
     ~H"""
     <div>
-      <.header>
-        <p>{if @client.id, do: "Edit", else: "Add New"} Client</p>
-      </.header>
-
       <.form
         :let={f}
         for={@form}

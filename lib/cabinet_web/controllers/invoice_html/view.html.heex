@@ -28,7 +28,7 @@
         <.section_label>To</.section_label>
         <address class="*:not-italic">
           <p>{@invoice.client.name}</p>
-          <p :for={line <- String.split(@invoice.client.address, "\n", trim: true)}>{line}</p>
+          <p :for={line <- address_lines(@invoice.client.address)}>{line}</p>
         </address>
       </section>
 

@@ -94,8 +94,12 @@ defmodule CabinetWeb.Layouts do
 
   def app_header(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8">
+    <header class="navbar px-4 sm:px-6 lg:px-8 gap-4">
       <.link href={~p"/"}>Home</.link>
+
+      <%= if Cabinet.Auth.Guards.is_superuser?(@current_scope) do %>
+        <.link href={~p"/admin"}>Admin</.link>
+      <% end %>
 
       <ul class="menu menu-horizontal w-full relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
         <%= if @current_scope do %>
