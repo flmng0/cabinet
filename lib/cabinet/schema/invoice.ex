@@ -1,5 +1,6 @@
 defmodule Cabinet.Schema.Invoice do
   use Ecto.Schema
+  import Ecto.Changeset
 
   alias Cabinet.Schema.Unit
   alias Cabinet.Schema.Client
@@ -9,8 +10,6 @@ defmodule Cabinet.Schema.Invoice do
     field :due, :utc_datetime
 
     field :gst, :boolean
-
-    field :refnum, :integer 
 
     field :late?, :boolean, virtual: true
     field :days_overdue, :integer, virtual: true
@@ -23,5 +22,11 @@ defmodule Cabinet.Schema.Invoice do
     belongs_to :client, Client
 
     timestamps()
+  end
+
+  def changeset(invoice, attrs) do
+    invoice
+    |> cast(attrs, [:term, :due])
+    |> validate_required([:due])
   end
 end

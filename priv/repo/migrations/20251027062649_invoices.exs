@@ -15,7 +15,6 @@ defmodule Cabinet.Repo.Migrations.Invoices do
       add :term, :string
       add :due, :utc_datetime
       add :gst, :boolean
-      add :refnum, :integer
 
       add :client_id, references(:clients)
 

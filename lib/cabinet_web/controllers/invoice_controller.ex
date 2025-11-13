@@ -11,7 +11,7 @@ defmodule CabinetWeb.InvoiceController do
 
   def view(conn, %{"client" => client, "refnum" => refnum} = _params) do
     with {:ok, refnum} <- parse_refnum(refnum) do
-      if invoice = Invoices.get_invoice(client, refnum) do
+      if invoice = Invoices.get_invoice(client, refnum, full?: true) do
         conn
         |> assign_business()
         |> assign_invoice(invoice)
@@ -32,10 +32,10 @@ defmodule CabinetWeb.InvoiceController do
     |> render(:view)
   end
 
-  defp assign_invoice(conn, %Cabinet.Schema.Invoice{refnum: refnum} = invoice) do
+  defp assign_invoice(conn, %Cabinet.Schema.Invoice{id: id} = invoice) do
     conn
     |> assign(:invoice, invoice)
-    |> assign(:page_title, CabinetWeb.CoreComponents.format_refnum(refnum))
+    |> assign(:page_title, CabinetWeb.CoreComponents.format_refnum(id))
   end
 
   defp assign_business(conn) do
@@ -58,9 +58,9 @@ defmodule CabinetWeb.InvoiceController do
 
   defp mock_invoice() do
     %Invoice{
+      id: 1,
       term: nil,
       due: ~D"2025-10-27",
-      refnum: 1,
       inserted_at: ~D"2025-10-20",
       gst: false,
       units: [

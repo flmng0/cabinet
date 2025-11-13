@@ -43,10 +43,10 @@ defmodule Cabinet.Invoices do
     }
   end
 
-  def list_clients(%Scope{user: user}, preload? \\ false) when is_superuser(user) do
+  def list_clients(%Scope{user: user}, opts \\ []) when is_superuser(user) do
     query =
-      if preload? do
-        from c in Schema.Client, preload: [:users, :invoices]
+      if Keyword.get(opts, :full?, false) do
+        from Schema.Client, preload: [:users, :invoices]
       else
         Schema.Client
       end
@@ -60,27 +60,45 @@ defmodule Cabinet.Invoices do
     |> Repo.insert()
   end
 
-  def update_client(%Scope{user: user}, %Schema.Client{} = client, attrs) when is_superuser(user) do
+  def update_client(%Scope{user: user}, %Schema.Client{} = client, attrs)
+      when is_superuser(user) do
     client
     |> Schema.Client.changeset(attrs)
     |> Repo.update()
   end
 
-  def get_client(%Scope{user: user}, id) when is_superuser(user) do
-    Repo.get(Schema.Client, id)
+  def get_client(%Scope{user: user}, id, opts \\ []) when is_superuser(user) do
+    query =
+      if Keyword.get(opts, :full?, false) do
+        from Schema.Client, preload: [:invoices]
+      else
+        Schema.Client
+      end
+
+    Repo.get(query, id)
   end
 
-  def get_invoice(%Scope{user: user}, refnum) when is_superuser(user) do
-    Repo.get_by(Schema.Invoice, refnum: refnum) |> with_virtual_fields()
+  def get_invoice(scope, id, opts \\ [])
+
+  def get_invoice(%Scope{user: user}, id, opts) when is_superuser(user) do
+    if Keyword.get(opts, :full?, false) do
+      query = from Schema.Invoice, preload: [:units, :client]
+      Repo.get(query, id) |> with_virtual_fields()
+    else
+      Repo.get(Schema.Invoice, id)
+    end
   end
 
-  def get_invoice(%Scope{user: user}, refnum) do
+  def get_invoice(%Scope{user: user}, id, opts) do
     %User{client_id: client_id} = Repo.preload(user, [:client])
 
-    query = from e in Schema.Invoice, where: e.client_id == ^client_id, preload: [:units]
+    query = from e in Schema.Invoice, where: e.client_id == ^client_id
 
-    query
-    |> Repo.get_by(refnum: refnum)
-    |> with_virtual_fields()
+    if Keyword.get(opts, :full?, false) do
+      query = from query, preload: [:units]
+      Repo.get(query, id) |> with_virtual_fields()
+    else
+      Repo.get(query, id)
+    end
   end
 end
