@@ -22,15 +22,15 @@ defmodule CabinetWeb.AdminLive.Client.Show do
     {:noreply, socket}
   end
 
-  defp page_title(client, :view), do: client.name
-  defp page_title(client, :edit), do: "Editing " <> client.name
-
-  attr :client, Client
-  attr :invoices, Phoenix.LiveView.LiveStream
-  def client_view(assigns)
-
-  attr :client, Client
-  def client_edit(assigns)
+  @impl true
+  def handle_event("add-invoice", _params, socket) do
+    with {:ok, invoice} <- Invoices.create_invoice(socket.assigns.current_scope, socket.assigns.client) do
+      {:noreply, stream_insert(socket, :invoices, invoice)}
+    else
+      _ ->
+      {:noreply, socket}
+    end
+  end
 
   @impl true
   def handle_info({:submit_client, attrs}, socket) do
@@ -46,4 +46,14 @@ defmodule CabinetWeb.AdminLive.Client.Show do
       _ -> {:noreply, socket}
     end
   end
+
+  defp page_title(client, :view), do: client.name
+  defp page_title(client, :edit), do: "Editing " <> client.name
+
+  attr :client, Client
+  attr :invoices, Phoenix.LiveView.LiveStream
+  def client_view(assigns)
+
+  attr :client, Client
+  def client_edit(assigns)
 end

@@ -13,8 +13,9 @@
   <.table
     id="invoice_list"
     rows={@invoices}
+    row_click={fn {_, i} -> JS.navigate(~p"/admin/invoice/#{i.id}") end}
   >
-    <:col :let={{_, i}} label="#">{i.refnum}</:col>
+    <:col :let={{_, i}} label="#">{format_refnum(i.id)}</:col>
     <:col :let={{_, i}} label="Due Date">{i.due}</:col>
     <:col :let={{_, i}} label="Status">
       <p :if={i.late?} class="text-warning">Late</p>
@@ -23,8 +24,8 @@
     </:col>
 
     <:table_action>
-      <.button navigate={~p"/admin/invoice/new?client=#{@client.id}"}>
-        Create Invoice <.icon name="hero-arrow-top-right-on-square" />
+      <.button phx-click="add-invoice">
+        <.icon name="hero-plus" /> Add New
       </.button>
     </:table_action>
   </.table>

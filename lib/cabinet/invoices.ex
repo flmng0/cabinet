@@ -102,9 +102,13 @@ defmodule Cabinet.Invoices do
     end
   end
 
-  def create_invoice(%Scope{user: user}, attrs) when is_superuser(user) do
-    %Schema.Invoice{}
-    |> Schema.Invoice.changeset(attrs)
+  def create_invoice(scope, client) do
+    create_invoice(scope, client, Date.shift(Date.utc_today(), week: 1))
+  end
+
+  def create_invoice(%Scope{user: user}, %Schema.Client{} = client, due) when is_superuser(user) do
+    client
+    |> Ecto.build_assoc(:invoices, due: due)
     |> Repo.insert()
   end
 

@@ -30,6 +30,7 @@ defmodule CabinetWeb.CoreComponents do
   use Gettext, backend: CabinetWeb.Gettext
 
   alias Phoenix.LiveView.JS
+  alias Phoenix.LiveView.ColocatedHook
 
   ### CUSTOM
 
@@ -253,6 +254,8 @@ defmodule CabinetWeb.CoreComponents do
         <textarea
           id={@id}
           name={@name}
+          phx-hook=".SubmitKeys"
+          placeholder="Ctrl+Enter to Submit"
           class={[
             @class || "w-full textarea",
             @errors != [] && (@error_class || "textarea-error")
@@ -262,6 +265,18 @@ defmodule CabinetWeb.CoreComponents do
       </label>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
+    <script :type={ColocatedHook} name=".SubmitKeys">
+      export default {
+        mounted() {
+          this.el.addEventListener("keydown", (e) => {
+            if (e.ctrlKey && e.key === "Enter") {
+              const event = new Event('submit', {bubbles: true, cancelable: true});
+              this.el.form.dispatchEvent(event);
+            }
+          })
+        }
+      }
+    </script>
     """
   end
 

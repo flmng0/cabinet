@@ -28,5 +28,6 @@ defmodule Cabinet.Schema.Invoice do
     invoice
     |> cast(attrs, [:term, :due])
     |> validate_required([:due])
+    |> cast_assoc(:client)
   end
 end

@@ -44,7 +44,7 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
 
     initial_params =
       if new? do
-        %{due: Date.utc_today()}
+        %{due: Date.shift(Date.utc_today(), week: 1)}
       else
         %{}
       end
