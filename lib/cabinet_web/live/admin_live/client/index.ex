@@ -3,6 +3,8 @@ defmodule CabinetWeb.AdminLive.Client.Index do
 
   alias Cabinet.Invoices
 
+  def crumb, do: CabinetWeb.AdminLive.crumb() ++ [Clients: ~p"/admin/client"]
+
   @impl true
   def mount(_params, _session, socket) do
     {:ok, stream(socket, :clients, Invoices.list_clients(socket.assigns.current_scope))}

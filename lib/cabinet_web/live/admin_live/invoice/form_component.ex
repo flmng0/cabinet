@@ -14,15 +14,6 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
         phx-submit="submit"
         phx-change="validate"
       >
-        <.input
-          field={f[:client_id]}
-          label="Client"
-          type="select"
-          options={@client_options}
-          value={@client_id}
-          readonly={!is_nil(@client_id)}
-        />
-
         <.input field={f[:due]} label="Due Date" type="date" />
         <.input field={f[:term]} label="Terms" type="textarea" />
 
@@ -49,17 +40,10 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
         %{}
       end
 
-    client_options =
-      for c <- assigns.clients do
-        {c.name, c.id}
-      end
-
     socket =
       socket
       |> assign(:invoice, invoice)
-      |> assign(:client_id, invoice.client_id || assigns[:client_id])
       |> assign(:cancel, assigns[:cancel])
-      |> assign(:client_options, client_options)
       |> assign_form(initial_params)
 
     {:ok, socket}
@@ -75,10 +59,10 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
   end
 
   @impl true
-  def handle_event("submit", %{"invoice" => client_params}, socket) do
-    case Invoice.changeset(socket.assigns.invoice, client_params) do
+  def handle_event("submit", %{"invoice" => invoice_params}, socket) do
+    case Invoice.changeset(socket.assigns.invoice, invoice_params) do
       %{valid?: true} = _changeset ->
-        send(self(), {:submit_invoice, client_params})
+        send(self(), {:submit_invoice, invoice_params})
         {:noreply, socket}
 
       changeset ->
@@ -86,7 +70,7 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
     end
   end
 
-  def handle_event("validate", %{"invoice" => client_params}, socket) do
-    {:noreply, assign_form(socket, client_params, action: :validate)}
+  def handle_event("validate", %{"invoice" => invoice_params}, socket) do
+    {:noreply, assign_form(socket, invoice_params, action: :validate)}
   end
 end

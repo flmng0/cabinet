@@ -51,6 +51,9 @@ defmodule CabinetWeb.Layouts do
     """
   end
 
+  attr :title, :string, required: true
+  attr :icon, :string, default: nil
+
   attr :rest, :global, include: ~w(flash current_scope class)
 
   slot :inner_block, required: true
@@ -59,9 +62,38 @@ defmodule CabinetWeb.Layouts do
     attr :click, :any
   end
 
+  slot :crumb, doc: "breadcrumb entries" do
+    attr :icon, :string
+    attr :path, :string
+  end
+
   def admin(assigns) do
     ~H"""
     <.app {@rest}>
+      <nav class="text-sm pb-4">
+        <ul class="inline-flex items-center gap-2">
+          <li>
+            <.icon name="hero-wrench-screwdriver" />
+          </li>
+          <.icon name="hero-chevron-right" class="size-3 text-base-content/80" />
+          <%= for crumb <- @crumb do %>
+            <li>
+              <.link class="hover:underline cursor-pointer" navigate={crumb.path}>
+                <.icon name={crumb.icon} />
+                {render_slot(crumb)}
+              </.link>
+            </li>
+            <.icon name="hero-chevron-right" class="size-3 text-base-content/80" />
+          <% end %>
+          <li>
+            <span>
+              <.icon :if={@icon} name={@icon} />
+              {@title}
+            </span>
+          </li>
+        </ul>
+      </nav>
+
       {render_slot(@inner_block)}
 
       <div
@@ -95,11 +127,20 @@ defmodule CabinetWeb.Layouts do
   def app_header(assigns) do
     ~H"""
     <header class="navbar px-4 sm:px-6 lg:px-8 gap-4">
-      <.link href={~p"/"}>Home</.link>
+      <.button class="btn btn-ghost" href={~p"/"}>Home</.button>
 
-      <%= if Cabinet.Auth.Guards.is_superuser?(@current_scope) do %>
-        <.link href={~p"/admin"}>Admin</.link>
-      <% end %>
+      <div
+        :if={Cabinet.Auth.Guards.is_superuser?(@current_scope)}
+        class="dropdown dropdown-hover group"
+      >
+        <div tabindex="0" role="button" class="btn btn-ghost">
+          Admin <.icon name="hero-chevron-down" class="size-3" />
+        </div>
+        <ul tabindex="-1" class="menu dropdown-content bg-base-100 z-1 w-52 p-2 shadow-sm">
+          <li><.link href={~p"/admin/client"}>Clients</.link></li>
+          <li><.link href={~p"/admin/invoice"}>Invoices</.link></li>
+        </ul>
+      </div>
 
       <ul class="menu menu-horizontal w-full relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
         <%= if @current_scope do %>

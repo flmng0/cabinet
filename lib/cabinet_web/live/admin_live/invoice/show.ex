@@ -6,12 +6,24 @@ defmodule CabinetWeb.AdminLive.Invoice.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.admin flash={@flash} current_scope={@current_scope}>
+    <Layouts.admin
+      flash={@flash}
+      current_scope={@current_scope}
+      title={format_refnum(@invoice.id)}
+    >
+      <:crumb path={~p"/admin/invoice"} icon="hero-queue-list">Invoices</:crumb>
+
       <.header>
         {format_refnum(@invoice.id)}
 
         <:actions>
-          <.button variant="primary" patch={~p"/admin/invoice/#{@invoice.id}/edit"}>Edit</.button>
+          <.button
+            :if={@live_action != :edit}
+            variant="primary"
+            patch={~p"/admin/invoice/#{@invoice.id}/edit"}
+          >
+            Edit
+          </.button>
         </:actions>
       </.header>
 
@@ -20,7 +32,7 @@ defmodule CabinetWeb.AdminLive.Invoice.Show do
         id="invoice-form"
         module={CabinetWeb.AdminLive.Invoice.FormComponent}
         invoice={@invoice}
-        clients={@clients}
+        cancel={JS.patch(~p"/admin/invoice/#{@invoice.id}")}
       />
     </Layouts.admin>
     """
@@ -44,7 +56,7 @@ defmodule CabinetWeb.AdminLive.Invoice.Show do
         :edit -> "Editing " <> refnum
       end
 
-    socket = 
+    socket =
       socket
       |> assign(:invoice, invoice)
       |> assign(:client_id, nil)
@@ -55,7 +67,8 @@ defmodule CabinetWeb.AdminLive.Invoice.Show do
 
   @impl true
   def handle_info({:submit_invoice, attrs}, socket) do
-    with {:ok, invoice} <- Invoices.update_invoice(socket.assigns.current_scope, socket.assigns.invoice, attrs) do
+    with {:ok, invoice} <-
+           Invoices.update_invoice(socket.assigns.current_scope, socket.assigns.invoice, attrs) do
       {:noreply, push_patch(socket, to: ~p"/admin/invoice/#{invoice.id}")}
     else
       _ ->

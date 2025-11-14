@@ -1,12 +1,9 @@
-<Layouts.admin flash={@flash} current_scope={@current_scope}>
-  <nav class="pb-4">
-    <.link navigate={~p"/admin/client"} class="text-secondary text-sm group relative">
-      <.icon
-        name="hero-arrow-long-left"
-        class="size-4 -translate-y-1/2 top-1/2 group-hover:-translate-x-2 -translate-x-1 absolute right-full"
-      /> Return to Clients
-    </.link>
-  </nav>
+<Layouts.admin
+  flash={@flash}
+  current_scope={@current_scope}
+  title={@client.name}
+>
+  <:crumb path={~p"/admin/client"} icon="hero-users">Clients</:crumb>
 
   <div class="space-y-12">
     <.client_edit :if={@live_action == :edit} client={@client} />

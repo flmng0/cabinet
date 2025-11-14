@@ -10,23 +10,9 @@
 <section>
   <h2 class="text-md font-mono leading-4 pb-4">Invoices</h2>
 
-  <.table
-    id="invoice_list"
-    rows={@invoices}
+  <CabinetWeb.AdminLive.Common.invoice_table
+    invoices={@invoices}
     row_click={fn {_, i} -> JS.navigate(~p"/admin/invoice/#{i.id}") end}
-  >
-    <:col :let={{_, i}} label="#">{format_refnum(i.id)}</:col>
-    <:col :let={{_, i}} label="Due Date">{i.due}</:col>
-    <:col :let={{_, i}} label="Status">
-      <p :if={i.late?} class="text-warning">Late</p>
-      <p :if={!i.late?} class="text-base-content">Not Due</p>
-      <%!-- <p :if={!i.paid?} class="text-success">Paid</p> --%>
-    </:col>
-
-    <:table_action>
-      <.button phx-click="add-invoice">
-        <.icon name="hero-plus" /> Add New
-      </.button>
-    </:table_action>
-  </.table>
+    new_click="add-invoice"
+  />
 </section>

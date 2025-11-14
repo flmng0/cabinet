@@ -78,6 +78,16 @@ defmodule Cabinet.Invoices do
     |> Repo.update()
   end
 
+  def list_invoices(%Scope{user: user}, opts \\ []) when is_superuser(user) do
+    if Keyword.get(opts, :full?, false) do
+      query = from Schema.Invoice, preload: [:units, :client]
+
+      Repo.all(query) |> Enum.map(&with_virtual_fields/1)
+    else
+      Repo.all(Schema.Invoice)
+    end
+  end
+
   def get_invoice(scope, id, opts \\ [])
 
   def get_invoice(%Scope{user: user}, id, opts) when is_superuser(user) do
@@ -106,7 +116,8 @@ defmodule Cabinet.Invoices do
     create_invoice(scope, client, Date.shift(Date.utc_today(), week: 1))
   end
 
-  def create_invoice(%Scope{user: user}, %Schema.Client{} = client, due) when is_superuser(user) do
+  def create_invoice(%Scope{user: user}, %Schema.Client{} = client, due)
+      when is_superuser(user) do
     client
     |> Ecto.build_assoc(:invoices, due: due)
     |> Repo.insert()

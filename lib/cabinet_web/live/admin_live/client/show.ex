@@ -8,8 +8,11 @@ defmodule CabinetWeb.AdminLive.Client.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _url, socket) do
-    client =
-      Invoices.get_client(socket.assigns.current_scope, id, full?: true)
+    client = Invoices.get_client(socket.assigns.current_scope, id, full?: true)
+
+    if is_nil(client) do
+      raise CabinetWeb.NotFoundError, message: "No such client with ID #{id}"
+    end
 
     title = page_title(client, socket.assigns.live_action) <> " - Clients"
 
@@ -24,11 +27,12 @@ defmodule CabinetWeb.AdminLive.Client.Show do
 
   @impl true
   def handle_event("add-invoice", _params, socket) do
-    with {:ok, invoice} <- Invoices.create_invoice(socket.assigns.current_scope, socket.assigns.client) do
+    with {:ok, invoice} <-
+           Invoices.create_invoice(socket.assigns.current_scope, socket.assigns.client) do
       {:noreply, stream_insert(socket, :invoices, invoice)}
     else
       _ ->
-      {:noreply, socket}
+        {:noreply, socket}
     end
   end
 

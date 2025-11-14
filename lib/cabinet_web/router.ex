@@ -29,8 +29,6 @@ defmodule CabinetWeb.Router do
 
     live_session :admin,
       on_mount: [{CabinetWeb.UserAuth, :require_authenticated}] do
-      live "/", AdminLive, :home
-
       scope "/client", AdminLive.Client do
         live "/", Index, :index
         live "/new", Index, :new
@@ -40,8 +38,8 @@ defmodule CabinetWeb.Router do
       end
 
       scope "/invoice", AdminLive.Invoice do
-        # live "/", Index, :index
-        live "/new", Show, :new
+        live "/", Index, :index
+
         live "/:id", Show, :view
         live "/:id/edit", Show, :edit
       end
