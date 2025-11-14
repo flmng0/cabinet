@@ -95,6 +95,9 @@ defmodule CabinetWeb do
       # Core UI components
       import CabinetWeb.CoreComponents
 
+      # Custom formatting utilities
+      import CabinetWeb.Util
+
       # Common modules used in templates
       alias Phoenix.LiveView.JS
       alias CabinetWeb.Layouts

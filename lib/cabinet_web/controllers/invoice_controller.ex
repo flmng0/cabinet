@@ -35,7 +35,7 @@ defmodule CabinetWeb.InvoiceController do
   defp assign_invoice(conn, %Cabinet.Schema.Invoice{id: id} = invoice) do
     conn
     |> assign(:invoice, invoice)
-    |> assign(:page_title, CabinetWeb.CoreComponents.format_refnum(id))
+    |> assign(:page_title, CabinetWeb.Util.format_refnum(id))
   end
 
   defp assign_business(conn) do
