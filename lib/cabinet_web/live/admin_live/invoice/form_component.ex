@@ -1,4 +1,4 @@
-defmodule CabinetWeb.AdminLive.Invoice.NewFormComponent do
+defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
   use CabinetWeb, :live_component
 
   alias Cabinet.Schema.Invoice
@@ -14,13 +14,21 @@ defmodule CabinetWeb.AdminLive.Invoice.NewFormComponent do
         phx-submit="submit"
         phx-change="validate"
       >
-        <.input field={f[:due]} label="Due Date" type="datetime-local" />
+        <.input
+          field={f[:client_id]}
+          label="Client"
+          type="select"
+          options={@client_options}
+          readonly={!is_nil(@client_id)}
+        />
+
+        <.input field={f[:due]} label="Due Date" type="date" />
         <.input field={f[:term]} label="Terms" type="textarea" />
 
         <div class="flex mt-4 gap-2 justify-end">
           <.button phx-click={@cancel} type="button">Cancel</.button>
           <.button variant="primary" type="submit">
-            {if @client, do: "Save", else: "Create Invoice"}
+            {if @invoice, do: "Save", else: "Create Invoice"}
           </.button>
         </div>
       </.form>
@@ -30,14 +38,28 @@ defmodule CabinetWeb.AdminLive.Invoice.NewFormComponent do
 
   @impl true
   def update(assigns, socket) do
+    new? = is_nil(assigns[:invoice])
     invoice = assigns[:invoice] || %Invoice{}
+
+    initial_params =
+      if new? do
+        %{due: Date.utc_today()}
+      else
+        %{}
+      end
+
+    client_options =
+      for c <- assigns.clients do
+        {c.name, c.id}
+      end
 
     socket =
       socket
       |> assign(:invoice, invoice)
-      |> assign(:client, invoice.client || assigns[:client])
-      |> assign(:cancel, assigns.cancel)
-      |> assign_form(%{})
+      |> assign(:client_id, invoice.client_id || assigns[:client_id])
+      |> assign(:cancel, assigns[:cancel])
+      |> assign(:client_options, client_options)
+      |> assign_form(initial_params)
 
     {:ok, socket}
   end

@@ -13,7 +13,7 @@ defmodule Cabinet.Repo.Migrations.Invoices do
 
     create table(:invoices) do
       add :term, :string
-      add :due, :utc_datetime
+      add :due, :date
       add :gst, :boolean
 
       add :client_id, references(:clients)

@@ -7,7 +7,7 @@ defmodule Cabinet.Schema.Invoice do
 
   schema "invoices" do
     field :term, :string
-    field :due, :utc_datetime
+    field :due, :date
 
     field :gst, :boolean
 
