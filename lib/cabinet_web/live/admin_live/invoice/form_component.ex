@@ -19,6 +19,7 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
           label="Client"
           type="select"
           options={@client_options}
+          value={@client_id}
           readonly={!is_nil(@client_id)}
         />
 

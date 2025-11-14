@@ -3,8 +3,16 @@ defmodule CabinetWeb.Util do
 
   defp remove_spaces(text) when is_binary(text), do: Regex.replace(~r/\s/u, text, "")
 
+  def format_refnum(num) when is_binary(num) do
+    String.to_integer(num)
+    |> format_refnum()
+  end
+
   def format_refnum(num) when is_integer(num) do
-    "INV-" <> String.pad_leading(to_string(num), 4, "0")
+    num
+    |> to_string()
+    |> String.pad_leading(4, "0")
+    |> then(&"INV-#{&1}")
   end
 
   def format_bsb(bsb) when is_binary(bsb) do

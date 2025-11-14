@@ -54,6 +54,17 @@ defmodule Cabinet.Invoices do
     Repo.all(query)
   end
 
+  def get_client(%Scope{user: user}, id, opts \\ []) when is_superuser(user) do
+    query =
+      if Keyword.get(opts, :full?, false) do
+        from Schema.Client, preload: [:invoices]
+      else
+        Schema.Client
+      end
+
+    Repo.get(query, id)
+  end
+
   def create_client(%Scope{user: user}, attrs) when is_superuser(user) do
     %Schema.Client{}
     |> Schema.Client.changeset(attrs)
@@ -65,17 +76,6 @@ defmodule Cabinet.Invoices do
     client
     |> Schema.Client.changeset(attrs)
     |> Repo.update()
-  end
-
-  def get_client(%Scope{user: user}, id, opts \\ []) when is_superuser(user) do
-    query =
-      if Keyword.get(opts, :full?, false) do
-        from Schema.Client, preload: [:invoices]
-      else
-        Schema.Client
-      end
-
-    Repo.get(query, id)
   end
 
   def get_invoice(scope, id, opts \\ [])
@@ -100,5 +100,18 @@ defmodule Cabinet.Invoices do
     else
       Repo.get(query, id)
     end
+  end
+
+  def create_invoice(%Scope{user: user}, attrs) when is_superuser(user) do
+    %Schema.Invoice{}
+    |> Schema.Invoice.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_invoice(%Scope{user: user}, %Schema.Invoice{} = invoice, attrs)
+      when is_superuser(user) do
+    invoice
+    |> Schema.Invoice.changeset(attrs)
+    |> Repo.update()
   end
 end
