@@ -8,12 +8,12 @@
   <.table
     id="client_list"
     rows={@streams.clients}
-    row_click={fn {_, c} -> JS.navigate(~p"/admin/clients/#{c.id}") end}
+    row_click={fn {_, c} -> JS.navigate(~p"/admin/client/#{c.id}") end}
   >
     <:col :let={{_, c}} label="Shortcode">{c.shortcode}</:col>
     <:col :let={{_, c}} label="Name">{c.name}</:col>
     <:table_action>
-      <.button patch={~p"/admin/clients/new"}>New Client</.button>
+      <.button patch={~p"/admin/client/new"}>New Client</.button>
     </:table_action>
   </.table>
 
@@ -21,12 +21,12 @@
     <div class="modal-box">
       <.header>Create New Client</.header>
       <.live_component
-        module={CabinetWeb.AdminLive.Clients.FormComponent}
+        module={CabinetWeb.AdminLive.Client.FormComponent}
         id="new-client-form"
-        cancel={JS.patch(~p"/admin/clients")}
+        cancel={JS.patch(~p"/admin/client")}
       />
     </div>
-    <.link patch={~p"/admin/clients"} class="modal-backdrop">Close</.link>
+    <.link patch={~p"/admin/client"} class="modal-backdrop">Close</.link>
   </dialog>
 
   <:util click="clear-all">Clear Clients</:util>

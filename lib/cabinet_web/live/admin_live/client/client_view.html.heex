@@ -3,7 +3,7 @@
   <:subtitle>{@client.shortcode}</:subtitle>
 
   <:actions>
-    <.button variant="primary" patch={~p"/admin/clients/#{@client.id}/edit"}>Edit</.button>
+    <.button variant="primary" patch={~p"/admin/client/#{@client.id}/edit"}>Edit</.button>
   </:actions>
 </.header>
 
@@ -23,7 +23,9 @@
     </:col>
 
     <:table_action>
-      <.button patch={~p"/admin/clients/#{@client.id}/new-invoice"}>Create Invoice</.button>
+      <.button navigate={~p"/admin/invoice/new?client=#{@client.id}"}>
+        Create Invoice <.icon name="hero-arrow-top-right-on-square" />
+      </.button>
     </:table_action>
   </.table>
 </section>

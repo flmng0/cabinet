@@ -3,6 +3,6 @@ defmodule CabinetWeb.AdminLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, push_navigate(socket, to: ~p"/admin/clients")}
+    {:ok, push_navigate(socket, to: ~p"/admin/client")}
   end
 end

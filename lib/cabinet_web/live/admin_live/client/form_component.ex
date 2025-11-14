@@ -1,4 +1,4 @@
-defmodule CabinetWeb.AdminLive.Clients.FormComponent do
+defmodule CabinetWeb.AdminLive.Client.FormComponent do
   use CabinetWeb, :live_component
 
   alias Cabinet.Schema.Client

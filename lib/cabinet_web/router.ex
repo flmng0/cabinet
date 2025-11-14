@@ -31,13 +31,19 @@ defmodule CabinetWeb.Router do
       on_mount: [{CabinetWeb.UserAuth, :require_authenticated}] do
       live "/", AdminLive, :home
 
-      scope "/clients", AdminLive.Clients do
+      scope "/client", AdminLive.Client do
         live "/", Index, :index
         live "/new", Index, :new
 
         live "/:id", Show, :view
         live "/:id/edit", Show, :edit
-        live "/:id/new-invoice", Show, :new_invoice
+      end
+
+      scope "/invoice", AdminLive.Invoice do
+        # live "/", Index, :index
+        live "/new", Show, :new
+        live "/:id", Show, :view
+        live "/:id/edit", Show, :edit
       end
     end
   end

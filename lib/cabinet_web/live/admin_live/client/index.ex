@@ -1,4 +1,4 @@
-defmodule CabinetWeb.AdminLive.Clients.Index do
+defmodule CabinetWeb.AdminLive.Client.Index do
   use CabinetWeb, :live_view
 
   alias Cabinet.Invoices
@@ -27,7 +27,7 @@ defmodule CabinetWeb.AdminLive.Clients.Index do
       socket =
         socket
         |> stream_insert(:clients, client)
-        |> push_navigate(to: ~p"/admin/clients/#{client.id}")
+        |> push_navigate(to: ~p"/admin/client/#{client.id}")
 
       {:noreply, socket}
     else

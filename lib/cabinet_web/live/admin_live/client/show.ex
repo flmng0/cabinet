@@ -1,4 +1,4 @@
-defmodule CabinetWeb.AdminLive.Clients.Show do
+defmodule CabinetWeb.AdminLive.Client.Show do
   use CabinetWeb, :live_view
 
   alias Cabinet.Invoices
@@ -24,7 +24,6 @@ defmodule CabinetWeb.AdminLive.Clients.Show do
 
   defp page_title(client, :view), do: client.name
   defp page_title(client, :edit), do: "Editing " <> client.name
-  defp page_title(client, :new_invoice), do: "New Invoice - " <> client.name
 
   attr :client, Client
   attr :invoices, Phoenix.LiveView.LiveStream
@@ -40,21 +39,11 @@ defmodule CabinetWeb.AdminLive.Clients.Show do
       socket =
         socket
         |> assign(:client, client)
-        |> push_patch(to: ~p"/admin/clients/#{client.id}")
+        |> push_patch(to: ~p"/admin/client/#{client.id}")
 
       {:noreply, socket}
     else
       _ -> {:noreply, socket}
     end
-  end
-
-  def handle_info({:submit_invoice, attrs}, socket) do
-    IO.inspect(attrs, label: "Invoice created")
-
-    {:noreply, socket}
-
-    # with {:ok, invoice} <- Invoices.create_invoice(socket.assigns.current_scope, socket.assigns.client, attrs) do
-    #   {:noreply, push_navigate(socket, to: ~p"/admin/")}
-    # end
   end
 end
