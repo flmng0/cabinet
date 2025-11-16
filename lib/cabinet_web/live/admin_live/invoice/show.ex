@@ -7,12 +7,9 @@ defmodule CabinetWeb.AdminLive.Invoice.Show do
   def render(assigns) do
     ~H"""
     <Layouts.admin
-      flash={@flash}
-      current_scope={@current_scope}
+      current_view={:invoice}
       title={format_refnum(@invoice.id)}
     >
-      <:crumb path={~p"/admin/invoice"} icon="hero-queue-list">Invoices</:crumb>
-
       <.header>
         {format_refnum(@invoice.id)}
 

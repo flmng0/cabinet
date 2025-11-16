@@ -28,7 +28,7 @@ defmodule CabinetWeb.Router do
     pipe_through [:browser, :require_superuser]
 
     live_session :admin,
-      on_mount: [{CabinetWeb.UserAuth, :require_authenticated}] do
+      on_mount: [{CabinetWeb.UserAuth, :require_authenticated}, CabinetWeb.AdminLive.Routes] do
       scope "/client", AdminLive.Client do
         live "/", Index, :index
         live "/new", Index, :new

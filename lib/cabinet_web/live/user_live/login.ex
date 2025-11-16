@@ -6,7 +6,7 @@ defmodule CabinetWeb.UserLive.Login do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <Layouts.app>
       <div class="mx-auto max-w-sm space-y-4">
         <div class="text-center">
           <.header>
@@ -31,8 +31,8 @@ defmodule CabinetWeb.UserLive.Login do
         </div>
 
         <.form
-          :if={!@submitted}
           :let={f}
+          :if={!@submitted}
           for={@form}
           id="login_form"
           action={~p"/users/log-in"}
@@ -56,7 +56,9 @@ defmodule CabinetWeb.UserLive.Login do
           <.icon name="hero-check-circle" class="size-6 shrink-0" />
           <div>
             <p class="text-lg font-mono">Log-in Submitted Successfully</p>
-            <p>If your email is in our system, you will receive instructions for logging in shortly.</p>
+            <p>
+              If your email is in our system, you will receive instructions for logging in shortly.
+            </p>
           </div>
         </div>
       </div>
@@ -71,11 +73,13 @@ defmodule CabinetWeb.UserLive.Login do
         get_in(socket.assigns, [:current_scope, Access.key(:user), Access.key(:email)])
 
     form = to_form(%{"email" => email}, as: "user")
-    title = if socket.assigns.current_scope do
-      "Re-Authenticate"
-    else
-      "Log In"
-    end
+
+    title =
+      if socket.assigns.current_scope do
+        "Re-Authenticate"
+      else
+        "Log In"
+      end
 
     {:ok, assign(socket, form: form, submitted: false, page_title: title)}
   end

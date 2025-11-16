@@ -8,12 +8,7 @@ defmodule CabinetWeb.AdminLive.Invoice.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.admin
-      flash={@flash}
-      current_scope={@current_scope}
-      title="Invoices"
-      icon="hero-queue-list"
-    >
+    <Layouts.admin current_view={:invoice}>
       <.invoice_table
         invoices={@streams.invoices}
         show_client

@@ -6,7 +6,7 @@ defmodule CabinetWeb.UserLive.Confirmation do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
+    <Layouts.app>
       <div class="mx-auto max-w-sm">
         <div class="text-center">
           <.header>Welcome {@user.email}</.header>
@@ -73,7 +73,8 @@ defmodule CabinetWeb.UserLive.Confirmation do
     if user = Auth.get_user_by_magic_link_token(token) do
       form = to_form(%{"token" => token}, as: "user")
 
-      socket = assign(socket, user: user, form: form, trigger_submit: false, page_title: "Welcome")
+      socket =
+        assign(socket, user: user, form: form, trigger_submit: false, page_title: "Welcome")
 
       {:ok, socket, temporary_assigns: [form: nil]}
     else

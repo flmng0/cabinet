@@ -1,10 +1,7 @@
 <Layouts.admin
-  flash={@flash}
-  current_scope={@current_scope}
+  current_view={:client}
   title={@client.name}
 >
-  <:crumb path={~p"/admin/client"} icon="hero-users">Clients</:crumb>
-
   <div class="space-y-12">
     <.client_edit :if={@live_action == :edit} client={@client} />
     <.client_view :if={@live_action != :edit} client={@client} invoices={@streams.invoices} />

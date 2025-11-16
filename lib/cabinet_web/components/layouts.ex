@@ -20,41 +20,40 @@ defmodule CabinetWeb.Layouts do
 
   ## Examples
 
-      <Layouts.app flash={@flash}>
+      <Layouts.app>
         <h1>Content</h1>
       </Layouts.app>
 
   """
-  attr :flash, :map, required: true, doc: "the map of flash messages"
-
-  attr :current_scope, :map,
-    default: nil,
-    doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
-
-  attr :class, :string, default: ""
+  attr :class, :string, default: nil
 
   slot :inner_block, required: true
 
   def app(assigns) do
     ~H"""
     <div class="flex flex-col min-h-screen">
-      <.app_header current_scope={@current_scope} />
-
-      <main class={["px-4 py-20 sm:px-6 lg:px-8 bg-base-200 grow", @class]}>
-        <div class="mx-auto max-w-2xl space-y-4">
-          {render_slot(@inner_block)}
-        </div>
-      </main>
+      <.main_container class={@class}>{render_slot(@inner_block)}</.main_container>
     </div>
-
-    <.flash_group flash={@flash} />
     """
   end
 
-  attr :title, :string, required: true
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
+  def main_container(assigns) do
+    ~H"""
+    <main class={["px-4 py-20 sm:px-6 lg:px-8 grow", @class]}>
+      <div class="mx-auto max-w-2xl space-y-4">
+        {render_slot(@inner_block)}
+      </div>
+    </main>
+    """
+  end
+
+  attr :title, :string, default: nil
   attr :icon, :string, default: nil
 
-  attr :rest, :global, include: ~w(flash current_scope class)
+  attr :current_view, :atom, required: true, values: ~w(client invoice)a
 
   slot :inner_block, required: true
 
@@ -62,60 +61,43 @@ defmodule CabinetWeb.Layouts do
     attr :click, :any
   end
 
-  slot :crumb, doc: "breadcrumb entries" do
-    attr :icon, :string
-    attr :path, :string
-  end
-
   def admin(assigns) do
     ~H"""
-    <.app {@rest}>
-      <nav class="text-sm pb-4">
-        <ul class="inline-flex items-center gap-2">
-          <li>
-            <.icon name="hero-wrench-screwdriver" />
-          </li>
-          <.icon name="hero-chevron-right" class="size-3 text-base-content/80" />
-          <%= for crumb <- @crumb do %>
-            <li>
-              <.link class="hover:underline cursor-pointer" navigate={crumb.path}>
-                <.icon name={crumb.icon} />
-                {render_slot(crumb)}
-              </.link>
-            </li>
-            <.icon name="hero-chevron-right" class="size-3 text-base-content/80" />
-          <% end %>
-          <li>
-            <span>
-              <.icon :if={@icon} name={@icon} />
-              {@title}
-            </span>
+    <div class="grid lg:grid-cols-[auto_1fr] place-items-center h-full">
+      <nav class="w-full lg:w-56 lg:h-full">
+        <ul class="menu bg-base-200 text-base-content z-1 border-r border-base-300 shadow-md size-full">
+          <li :for={{key, route} <- CabinetWeb.AdminLive.Routes.routes()}>
+            <.link navigate={route.path} class={assigns[:current_view] == key && "menu-active"}>
+              <.icon name={route.icon} />
+              {route.title}
+            </.link>
           </li>
         </ul>
       </nav>
+      <div class="w-full max-w-2xl">
+        {render_slot(@inner_block)}
 
-      {render_slot(@inner_block)}
+        <div
+          :if={Application.fetch_env!(:cabinet, :dev_utils) && @util != []}
+          class="rounded-md border border-secondary-content bg-secondary text-secondary-content p-4 mt-12 col-span-full self-start"
+        >
+          <.header>
+            <p>Developer Utilities</p>
+            <:subtitle>
+              <p>Quick utilities only available in the development environment.</p>
+            </:subtitle>
+          </.header>
 
-      <div
-        :if={Application.fetch_env!(:cabinet, :dev_utils) && @util != []}
-        class="rounded-md border border-secondary-content bg-secondary text-secondary-content p-4 mt-12"
-      >
-        <.header>
-          <p>Developer Utilities</p>
-          <:subtitle>
-            <p>Quick utilities only available in the development environment.</p>
-          </:subtitle>
-        </.header>
-
-        <ul class="flex flex-row flex-wrap">
-          <li :for={item <- @util}>
-            <.button phx-click={item[:click]} class="btn btn-soft btn-info">
-              {render_slot(item)}
-            </.button>
-          </li>
-        </ul>
+          <ul class="flex flex-row flex-wrap">
+            <li :for={item <- @util}>
+              <.button phx-click={item[:click]} class="btn btn-soft btn-info">
+                {render_slot(item)}
+              </.button>
+            </li>
+          </ul>
+        </div>
       </div>
-    </.app>
+    </div>
     """
   end
 
@@ -123,22 +105,32 @@ defmodule CabinetWeb.Layouts do
   App header, including conditional user settings / log-out button.
   """
   attr :current_scope, :map, default: nil
+  attr :class, :string, default: nil
+
+  attr :show_admin, :boolean, default: true
 
   def app_header(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8 gap-4">
+    <header class={["bg-base-content text-base-100 navbar px-4 sm:px-6 lg:px-8 gap-4", @class]}>
       <.button class="btn btn-ghost" href={~p"/"}>Home</.button>
 
       <div
-        :if={Cabinet.Auth.Guards.is_superuser?(@current_scope)}
+        :if={@show_admin && Cabinet.Auth.Guards.is_superuser?(@current_scope)}
         class="dropdown dropdown-hover group"
       >
         <div tabindex="0" role="button" class="btn btn-ghost">
           Admin <.icon name="hero-chevron-down" class="size-3" />
         </div>
-        <ul tabindex="-1" class="menu dropdown-content bg-base-100 z-1 w-52 p-2 shadow-sm">
-          <li><.link href={~p"/admin/client"}>Clients</.link></li>
-          <li><.link href={~p"/admin/invoice"}>Invoices</.link></li>
+        <ul
+          tabindex="-1"
+          class="menu dropdown-content bg-base-100 text-base-content z-1 w-52 p-2 shadow-sm rounded-box"
+        >
+          <li :for={{key, route} <- CabinetWeb.AdminLive.Routes.routes()}>
+            <.link navigate={route.path}>
+              <.icon name={route.icon} />
+              {route.title}
+            </.link>
+          </li>
         </ul>
       </div>
 
