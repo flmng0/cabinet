@@ -2,9 +2,6 @@ defmodule CabinetWeb.AdminLive.Client.Show do
   use CabinetWeb, :live_view
 
   alias Cabinet.Invoices
-  alias Cabinet.Schema.Client
-
-  embed_templates "client_*"
 
   @impl true
   def handle_params(%{"id" => id}, _url, socket) do
@@ -53,11 +50,4 @@ defmodule CabinetWeb.AdminLive.Client.Show do
 
   defp page_title(client, :view), do: client.name
   defp page_title(client, :edit), do: "Editing " <> client.name
-
-  attr :client, Client
-  attr :invoices, Phoenix.LiveView.LiveStream
-  def client_view(assigns)
-
-  attr :client, Client
-  def client_edit(assigns)
 end

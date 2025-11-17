@@ -1,10 +1,41 @@
 <Layouts.admin
   current_scope={@current_scope}
   current_view={:client}
-  title={@client.name}
 >
-  <div class="space-y-12">
-    <.client_edit :if={@live_action == :edit} client={@client} />
-    <.client_view :if={@live_action != :edit} client={@client} invoices={@streams.invoices} />
-  </div>
+  <%= if @live_action == :edit do %>
+    <.header>
+      Edit Client
+      <:subtitle>Editing client {@client.name}</:subtitle>
+    </.header>
+
+    <.live_component
+      module={CabinetWeb.AdminLive.Client.FormComponent}
+      id="edit-client"
+      client={@client}
+      cancel={JS.patch(~p"/admin/client/#{@client.id}", replace: true)}
+    />
+  <% end %>
+
+  <%= if @live_action == :view do %>
+    <.header>
+      {@client.name}
+      <:subtitle>{@client.shortcode}</:subtitle>
+
+      <:actions>
+        <.button variant="primary" patch={~p"/admin/client/#{@client.id}/edit"} replace>
+          Edit
+        </.button>
+      </:actions>
+    </.header>
+
+    <section>
+      <h2 class="text-md font-mono leading-4 pb-4">Invoices</h2>
+
+      <CabinetWeb.AdminLive.Common.invoice_table
+        invoices={@streams.invoices}
+        row_click={fn {_, i} -> JS.navigate(~p"/admin/invoice/#{i.id}") end}
+        new_click="add-invoice"
+      />
+    </section>
+  <% end %>
 </Layouts.admin>
