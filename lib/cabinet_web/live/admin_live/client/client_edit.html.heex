@@ -7,5 +7,5 @@
   module={CabinetWeb.AdminLive.Client.FormComponent}
   id="edit-client"
   client={@client}
-  cancel={JS.patch(~p"/admin/client/#{@client.id}")}
+  cancel={JS.patch(~p"/admin/client/#{@client.id}", replace: true)}
 />

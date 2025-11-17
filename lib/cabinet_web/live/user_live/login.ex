@@ -6,7 +6,7 @@ defmodule CabinetWeb.UserLive.Login do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app>
+    <Layouts.app current_scope={@current_scope}>
       <div class="mx-auto max-w-sm space-y-4">
         <div class="text-center">
           <.header>

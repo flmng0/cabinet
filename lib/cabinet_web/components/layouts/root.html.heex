@@ -12,8 +12,6 @@
     </script>
   </head>
   <body>
-    <.app_header current_scope={@current_scope} show_admin={!assigns[:admin_view]} />
-
     {@inner_content}
 
     <.flash_group flash={@flash} />

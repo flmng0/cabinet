@@ -7,8 +7,8 @@ defmodule CabinetWeb.AdminLive.Invoice.Show do
   def render(assigns) do
     ~H"""
     <Layouts.admin
+      current_scope={@current_scope}
       current_view={:invoice}
-      title={format_refnum(@invoice.id)}
     >
       <.header>
         {format_refnum(@invoice.id)}
@@ -18,6 +18,7 @@ defmodule CabinetWeb.AdminLive.Invoice.Show do
             :if={@live_action != :edit}
             variant="primary"
             patch={~p"/admin/invoice/#{@invoice.id}/edit"}
+            replace
           >
             Edit
           </.button>
@@ -29,7 +30,7 @@ defmodule CabinetWeb.AdminLive.Invoice.Show do
         id="invoice-form"
         module={CabinetWeb.AdminLive.Invoice.FormComponent}
         invoice={@invoice}
-        cancel={JS.patch(~p"/admin/invoice/#{@invoice.id}")}
+        cancel={JS.patch(~p"/admin/invoice/#{@invoice.id}", replace: true)}
       />
     </Layouts.admin>
     """

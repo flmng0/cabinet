@@ -25,15 +25,22 @@ defmodule CabinetWeb.Layouts do
       </Layouts.app>
 
   """
+  attr :current_scope, :map, default: nil
   attr :class, :string, default: nil
 
   slot :inner_block, required: true
 
   def app(assigns) do
     ~H"""
-    <div class="flex flex-col min-h-screen">
-      <.main_container class={@class}>{render_slot(@inner_block)}</.main_container>
-    </div>
+    <.app_header
+      current_scope={@current_scope}
+      show_admin={!assigns[:admin_view]}
+      class="flex-none"
+    />
+
+    <%!-- <div class="flex flex-col min-h-screen"> --%>
+    <.main_container class={@class}>{render_slot(@inner_block)}</.main_container>
+    <%!-- </div> --%>
     """
   end
 
@@ -50,10 +57,8 @@ defmodule CabinetWeb.Layouts do
     """
   end
 
-  attr :title, :string, default: nil
-  attr :icon, :string, default: nil
-
   attr :current_view, :atom, required: true, values: ~w(client invoice)a
+  attr :current_scope, :map, default: nil
 
   slot :inner_block, required: true
 
@@ -62,41 +67,70 @@ defmodule CabinetWeb.Layouts do
   end
 
   def admin(assigns) do
+    assigns =
+      assigns
+      |> assign(:routes, CabinetWeb.AdminLive.Routes.routes())
+      |> assign_new(:current_view, fn -> nil end)
+
     ~H"""
-    <div class="grid lg:grid-cols-[auto_1fr] place-items-center h-full">
-      <nav class="w-full lg:w-56 lg:h-full">
-        <ul class="menu bg-base-200 text-base-content z-1 border-r border-base-300 shadow-md size-full">
-          <li :for={{key, route} <- CabinetWeb.AdminLive.Routes.routes()}>
-            <.link navigate={route.path} class={assigns[:current_view] == key && "menu-active"}>
-              <.icon name={route.icon} />
-              {route.title}
-            </.link>
-          </li>
-        </ul>
-      </nav>
-      <div class="w-full max-w-2xl">
-        {render_slot(@inner_block)}
-
-        <div
-          :if={Application.fetch_env!(:cabinet, :dev_utils) && @util != []}
-          class="rounded-md border border-secondary-content bg-secondary text-secondary-content p-4 mt-12 col-span-full self-start"
+    <div class="drawer lg:drawer-open lg:bg-base-content lg:p-1">
+      <input type="checkbox" id="admin_drawer" class="drawer-toggle" />
+      <div class="drawer-content bg-base-100 lg:rounded-md">
+        <label
+          class="sticky top-0 left-0 m-4 btn btn-soft btn-square btn-neutral drawer-button lg:hidden justify-self-start"
+          for="admin_drawer"
+          aria-label="Open navigation"
         >
-          <.header>
-            <p>Developer Utilities</p>
-            <:subtitle>
-              <p>Quick utilities only available in the development environment.</p>
-            </:subtitle>
-          </.header>
+          <.icon name="hero-bars-3" />
+        </label>
 
-          <ul class="flex flex-row flex-wrap">
-            <li :for={item <- @util}>
-              <.button phx-click={item[:click]} class="btn btn-soft btn-info">
-                {render_slot(item)}
-              </.button>
+        <div class="py-10 px-2 w-full max-w-2xl mx-auto">
+          {render_slot(@inner_block)}
+
+          <div
+            :if={Application.fetch_env!(:cabinet, :dev_utils) && @util != []}
+            class="rounded-md border border-secondary-content bg-secondary text-secondary-content p-4 mt-12 col-span-full self-start"
+          >
+            <.header>
+              <p>Developer Utilities</p>
+              <:subtitle>
+                <p>Quick utilities only available in the development environment.</p>
+              </:subtitle>
+            </.header>
+
+            <ul class="flex flex-row flex-wrap">
+              <li :for={item <- @util}>
+                <.button phx-click={item[:click]} class="btn btn-soft btn-info">
+                  {render_slot(item)}
+                </.button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <nav class="drawer-side">
+        <label for="admin_drawer" class="drawer-overlay" />
+
+        <div class="h-full w-72 max-w-screen shadow-md bg-base-content text-base-100">
+          <hgroup class="py-8 px-4">
+            <h1 class="text-lg lg:text-xl">Cabinet Admin Panel</h1>
+            <p class="text-sm lg:text-base">Logged in as {@current_scope.user.email}</p>
+          </hgroup>
+
+          <ul class="menu lg:menu-lg w-full gap-2">
+            <li :for={{key, route} <- @routes}>
+              <.link
+                navigate={route.path}
+                class={if @current_view == key, do: "menu-active", else: "hover:bg-neutral/50"}
+              >
+                <.icon name={route.icon} />
+                {route.title}
+              </.link>
             </li>
           </ul>
         </div>
-      </div>
+      </nav>
     </div>
     """
   end

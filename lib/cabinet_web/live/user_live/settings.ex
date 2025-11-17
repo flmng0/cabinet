@@ -8,7 +8,7 @@ defmodule CabinetWeb.UserLive.Settings do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app>
+    <Layouts.app current_scope={@current_scope}>
       <div class="text-center">
         <.header>
           Account Settings
