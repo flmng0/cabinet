@@ -84,7 +84,7 @@ defmodule CabinetWeb.Layouts do
           <.icon name="hero-bars-3" />
         </label>
 
-        <div class="py-10 px-2 w-full max-w-2xl mx-auto">
+        <div class="py-10 px-4 w-full max-w-2xl mx-auto">
           {render_slot(@inner_block)}
 
           <div

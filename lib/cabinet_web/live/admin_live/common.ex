@@ -27,12 +27,6 @@ defmodule CabinetWeb.AdminLive.Common do
         <p :if={!i.late?} class="text-base-content">Not Due</p>
         <%!-- <p :if={!i.paid?} class="text-success">Paid</p> --%>
       </:col>
-
-      <:table_action>
-        <.button phx-click={@new_click}>
-          <.icon name="hero-plus" /> Add New
-        </.button>
-      </:table_action>
     </.table>
     """
   end

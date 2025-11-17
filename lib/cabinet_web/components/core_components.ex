@@ -318,18 +318,38 @@ defmodule CabinetWeb.CoreComponents do
   @doc """
   Renders a header with title.
   """
+  attr :size, :string, values: ~w(small)
+
   slot :inner_block, required: true
   slot :subtitle
   slot :actions
 
   def header(assigns) do
+    size_classes = %{
+      "small" => %{
+        container: "pb-2 lg:pb-6",
+        header: "text-md font-medium font-mono leading-6",
+        subtitle: ""
+      },
+      nil => %{
+        container: "pb-8 lg:pb-12",
+        header: "text-lg font-semibold leading-8",
+        subtitle: ""
+      }
+    }
+
+    assigns =
+      assign_new(assigns, :classes, fn assigns ->
+        Map.fetch!(size_classes, assigns[:size])
+      end)
+
     ~H"""
-    <header class={[@actions != [] && "flex items-center justify-between gap-6", "pb-8 lg:pb-12"]}>
+    <header class={[@classes.container, @actions != [] && "flex items-center justify-between gap-6"]}>
       <div>
-        <h1 class="text-lg font-semibold leading-8">
+        <h1 class={[@classes.header]}>
           {render_slot(@inner_block)}
         </h1>
-        <p class="text-sm text-base-content/70">
+        <p class={[@classes.subtitle, "text-sm text-base-content/70"]}>
           <%= if @subtitle != [] do %>
             {render_slot(@subtitle)}
           <% end %>

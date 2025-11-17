@@ -29,12 +29,18 @@
     </.header>
 
     <section>
-      <h2 class="text-md font-mono leading-4 pb-4">Invoices</h2>
+      <.header size="small">
+        Invoices
+        <:actions>
+          <.button class="btn btn-outline btn-secondary" phx-click="add-invoice">
+            <.icon name="hero-plus" /> Add New
+          </.button>
+        </:actions>
+      </.header>
 
       <CabinetWeb.AdminLive.Common.invoice_table
         invoices={@streams.invoices}
         row_click={fn {_, i} -> JS.navigate(~p"/admin/invoice/#{i.id}") end}
-        new_click="add-invoice"
       />
     </section>
   <% end %>

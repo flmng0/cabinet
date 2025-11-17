@@ -14,12 +14,18 @@ defmodule CabinetWeb.AdminLive.Invoice.Index do
     >
       <.header>
         <.icon name="hero-queue-list" /> Invoices
+        <:actions>
+          <!-- TODO: Implement the add-new event on this view -->
+          <.button class="btn btn-outline btn-secondary" phx-click="add-invoice">
+            <.icon name="hero-plus" /> Add New
+          </.button>
+        </:actions>
       </.header>
+
       <.invoice_table
         invoices={@streams.invoices}
         show_client
         row_click={fn {_, i} -> JS.navigate(~p"/admin/invoice/#{i.id}") end}
-        new_click="add-invoice"
       />
 
       <:util click="clear-all">Clear Invoices</:util>
