@@ -49,6 +49,22 @@ defmodule CabinetWeb.CoreComponents do
     """
   end
 
+  slot :item do
+    attr :name, :string
+    attr :class, :string
+  end
+
+  def detail_list(assigns) do
+    ~H"""
+    <dl class="grid grid-cols-[auto_1fr] gap-y-4 gap-x-8">
+      <%= for item <- @item do %>
+        <dt class="justify-self-end text-lg font-mono leading-6">{item.name}:</dt>
+        <dd class={Map.get(item, :class)}>{render_slot(item)}</dd>
+      <% end %>
+    </dl>
+    """
+  end
+
   ### DEFAULTS
 
   @doc """
@@ -318,7 +334,7 @@ defmodule CabinetWeb.CoreComponents do
   @doc """
   Renders a header with title.
   """
-  attr :size, :string, values: ~w(small)
+  attr :size, :string, values: ~w(small medium)
 
   slot :inner_block, required: true
   slot :subtitle
@@ -327,13 +343,18 @@ defmodule CabinetWeb.CoreComponents do
   def header(assigns) do
     size_classes = %{
       "small" => %{
-        container: "pb-2 lg:pb-6",
+        container: "pb-2 lg:pb-4",
         header: "text-md font-medium font-mono leading-6",
+        subtitle: ""
+      },
+      "medium" => %{
+        container: "pb-2 lg:pb-4",
+        header: "text-lg font-medium font-mono leading-6",
         subtitle: ""
       },
       nil => %{
         container: "pb-8 lg:pb-12",
-        header: "text-lg font-semibold leading-8",
+        header: "text-xl font-semibold leading-8",
         subtitle: ""
       }
     }

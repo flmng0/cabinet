@@ -10,28 +10,50 @@ defmodule CabinetWeb.AdminLive.Invoice.Show do
       current_scope={@current_scope}
       current_view={:invoice}
     >
-      <.header>
-        {format_refnum(@invoice.id)}
+      <%= if @live_action == :view do %>
+        <.header>
+          {format_refnum(@invoice.id)}
 
-        <:actions>
-          <.button
-            :if={@live_action != :edit}
-            variant="primary"
-            patch={~p"/admin/invoice/#{@invoice.id}/edit"}
-            replace
-          >
-            Edit
-          </.button>
-        </:actions>
-      </.header>
+          <:actions>
+            <.button
+              variant="primary"
+              patch={~p"/admin/invoice/#{@invoice.id}/edit"}
+              replace
+            >
+              Edit
+            </.button>
+          </:actions>
+        </.header>
 
-      <.live_component
-        :if={@live_action == :edit}
-        id="invoice-form"
-        module={CabinetWeb.AdminLive.Invoice.FormComponent}
-        invoice={@invoice}
-        cancel={JS.patch(~p"/admin/invoice/#{@invoice.id}", replace: true)}
-      />
+        <.detail_list>
+          <:item name="Client">
+            <.link navigate={~p"/admin/client/#{@invoice.client.id}"} class="link link-secondary">
+              {@invoice.client.name}
+            </.link>
+          </:item>
+
+          <:item name="Terms" class={@invoice.term || "italic text-base-content/50"}>
+            {@invoice.term || "N/A"}
+          </:item>
+
+          <:item name="Due Date">{@invoice.due}</:item>
+          <:item name="Subtotal">{@invoice.subtotal}</:item>
+        </.detail_list>
+      <% end %>
+
+      <%= if @live_action == :edit do %>
+        <.header>
+          Edit Invoice
+          <:subtitle>Editing invoice {format_refnum(@invoice.id)}</:subtitle>
+        </.header>
+
+        <.live_component
+          id="invoice-form"
+          module={CabinetWeb.AdminLive.Invoice.FormComponent}
+          invoice={@invoice}
+          cancel={JS.patch(~p"/admin/invoice/#{@invoice.id}", replace: true)}
+        />
+      <% end %>
     </Layouts.admin>
     """
   end
@@ -45,7 +67,7 @@ defmodule CabinetWeb.AdminLive.Invoice.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _url, socket) do
-    invoice = Invoices.get_invoice(socket.assigns.current_scope, id)
+    invoice = Invoices.get_invoice(socket.assigns.current_scope, id, full?: true)
     refnum = CabinetWeb.Util.format_refnum(id)
 
     title =

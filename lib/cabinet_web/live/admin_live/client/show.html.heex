@@ -2,20 +2,6 @@
   current_scope={@current_scope}
   current_view={:client}
 >
-  <%= if @live_action == :edit do %>
-    <.header>
-      Edit Client
-      <:subtitle>Editing client {@client.name}</:subtitle>
-    </.header>
-
-    <.live_component
-      module={CabinetWeb.AdminLive.Client.FormComponent}
-      id="edit-client"
-      client={@client}
-      cancel={JS.patch(~p"/admin/client/#{@client.id}", replace: true)}
-    />
-  <% end %>
-
   <%= if @live_action == :view do %>
     <.header>
       {@client.name}
@@ -43,5 +29,19 @@
         row_click={fn {_, i} -> JS.navigate(~p"/admin/invoice/#{i.id}") end}
       />
     </section>
+  <% end %>
+
+  <%= if @live_action == :edit do %>
+    <.header>
+      Edit Client
+      <:subtitle>Editing client {@client.name}</:subtitle>
+    </.header>
+
+    <.live_component
+      module={CabinetWeb.AdminLive.Client.FormComponent}
+      id="edit-client"
+      client={@client}
+      cancel={JS.patch(~p"/admin/client/#{@client.id}", replace: true)}
+    />
   <% end %>
 </Layouts.admin>

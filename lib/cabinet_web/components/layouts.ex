@@ -38,9 +38,7 @@ defmodule CabinetWeb.Layouts do
       class="flex-none"
     />
 
-    <%!-- <div class="flex flex-col min-h-screen"> --%>
     <.main_container class={@class}>{render_slot(@inner_block)}</.main_container>
-    <%!-- </div> --%>
     """
   end
 
@@ -118,7 +116,7 @@ defmodule CabinetWeb.Layouts do
             <p class="text-sm lg:text-base">Logged in as {@current_scope.user.email}</p>
           </hgroup>
 
-          <ul class="menu lg:menu-lg w-full gap-2">
+          <ul class="menu lg:menu-lg w-full gap-1">
             <li :for={{key, route} <- @routes}>
               <.link
                 navigate={route.path}
