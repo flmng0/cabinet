@@ -17,6 +17,54 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
         <.input field={f[:due]} label="Due Date" type="date" />
         <.input field={f[:term]} label="Terms" type="textarea" />
 
+        <div id="invoice_untis" phx-hook=".ReturnInsert" class="space-y-2">
+          <label class="label text-sm block clear-both">Units</label>
+
+          <.inputs_for :let={unit} field={f[:units]}>
+            <div class="flex flex-row gap-2 mb-2">
+              <input type="hidden" name="invoice[unit_sort][]" value={unit.index} />
+
+              <label class="floating-label">
+                <span :if={unit.index == 0}>Description</span>
+                <.input
+                  field={unit[:description]}
+                  type="text"
+                  container_class="grow"
+                  phx-mounted={unit.index > 0 && JS.focus()}
+                />
+              </label>
+              <label class="floating-label">
+                <span :if={unit.index == 0}>Cost ($)</span>
+                <.input field={unit[:cost]} type="number" container_class="flex-1" />
+              </label>
+              <label class="floating-label">
+                <span :if={unit.index == 0}>Count</span>
+                <.input field={unit[:count]} type="number" container_class="flex-1" />
+              </label>
+
+              <.button
+                type="button"
+                name="invoice[unit_drop][]"
+                value={unit.index}
+                phx-click={JS.dispatch("change")}
+              >
+                Delete
+              </.button>
+            </div>
+          </.inputs_for>
+
+          <input type="hidden" name="invoice[unit_drop][]" />
+
+          <.button
+            type="button"
+            name="invoice[unit_sort][]"
+            value="new"
+            phx-click={JS.dispatch("change")}
+          >
+            Add New
+          </.button>
+        </div>
+
         <div class="flex mt-4 gap-2 justify-end">
           <.button phx-click={@cancel} type="button">Cancel</.button>
           <.button variant="primary" type="submit">
@@ -24,6 +72,19 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
           </.button>
         </div>
       </.form>
+      <script :type={Phoenix.LiveView.ColocatedHook} name=".ReturnInsert">
+        export default {
+          mounted() {
+            const addButton = this.el.querySelector("button[value=new]");
+
+            this.el.addEventListener("keypress", (e) => {
+              if (e.key !== "Enter") return;
+                e.preventDefault();
+                addButton.click();
+            });
+          }
+        }
+      </script>
     </div>
     """
   end
@@ -37,7 +98,7 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
       if new? do
         %{due: Date.shift(Date.utc_today(), week: 1)}
       else
-        %{}
+        %{units: [%{}]}
       end
 
     socket =

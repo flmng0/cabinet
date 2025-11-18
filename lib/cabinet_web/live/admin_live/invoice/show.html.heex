@@ -1,0 +1,78 @@
+<Layouts.admin
+  current_scope={@current_scope}
+  current_view={:invoice}
+>
+  <%= if @live_action == :view do %>
+    <.header>
+      {format_refnum(@invoice.id)}
+
+      <:actions>
+        <.button
+          variant="primary"
+          patch={~p"/admin/invoice/#{@invoice.id}/edit"}
+          replace
+        >
+          Edit
+        </.button>
+      </:actions>
+    </.header>
+
+    <div class="space-y-6 lg:space-y-12">
+      <section>
+        <.header size="medium" class="mb-4">Invoice Details</.header>
+
+        <.detail_list>
+          <:item name="Client">
+            <.link navigate={~p"/admin/client/#{@invoice.client.id}"} class="link link-secondary">
+              {@invoice.client.name}
+            </.link>
+          </:item>
+
+          <:item name="Terms" class={@invoice.term || "italic text-base-content/50"}>
+            {@invoice.term || "N/A"}
+          </:item>
+
+          <:item name="Due Date">{@invoice.due}</:item>
+          <:item name="Subtotal">{@invoice.subtotal}</:item>
+        </.detail_list>
+      </section>
+
+      <section>
+        <.header size="medium" class="mb-4">Invoice Units</.header>
+
+        <.table id="invoice_units" rows={@invoice.units}>
+          <:col :let={unit} label="Description">{unit.description}</:col>
+          <:col
+            :let={unit}
+            label="Quantity"
+            small_label="QTY"
+            data_class="text-center"
+            header_class="text-center"
+          >
+            {unit.count}
+          </:col>
+          <:col :let={unit} label="Unit Price" data_class="text-center" header_class="text-center">
+            {unit.cost}
+          </:col>
+          <:col :let={unit} label="Amount" data_class="text-right" header_class="text-right">
+            {Decimal.mult(unit.cost, unit.count)}
+          </:col>
+        </.table>
+      </section>
+    </div>
+  <% end %>
+
+  <%= if @live_action == :edit do %>
+    <.header>
+      Edit Invoice
+      <:subtitle>Editing invoice {format_refnum(@invoice.id)}</:subtitle>
+    </.header>
+
+    <.live_component
+      id="invoice-form"
+      module={CabinetWeb.AdminLive.Invoice.FormComponent}
+      invoice={@invoice}
+      cancel={JS.patch(~p"/admin/invoice/#{@invoice.id}", replace: true)}
+    />
+  <% end %>
+</Layouts.admin>

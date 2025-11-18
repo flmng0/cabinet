@@ -56,9 +56,11 @@ defmodule CabinetWeb.CoreComponents do
 
   def detail_list(assigns) do
     ~H"""
-    <dl class="grid grid-cols-[auto_1fr] gap-y-4 gap-x-8">
+    <dl class="grid grid-cols-[auto_1fr] gap-y-4 gap-x-8 align-items-center">
       <%= for item <- @item do %>
-        <dt class="justify-self-end text-lg font-mono leading-6">{item.name}:</dt>
+        <dt class="justify-self-end text-base font-mono leading-6 text-base-content/70">
+          {item.name}:
+        </dt>
         <dd class={Map.get(item, :class)}>{render_slot(item)}</dd>
       <% end %>
     </dl>
@@ -198,6 +200,7 @@ defmodule CabinetWeb.CoreComponents do
   attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
+  attr :container_class, :string, default: nil, doc: "the container class to add to the defaults"
   attr :class, :string, default: nil, doc: "the input class to use over defaults"
   attr :error_class, :string, default: nil, doc: "the input error class to use over defaults"
 
@@ -223,7 +226,7 @@ defmodule CabinetWeb.CoreComponents do
       end)
 
     ~H"""
-    <div class="fieldset mb-2">
+    <div class={@container_class || "fieldset mb-2"}>
       <label>
         <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
         <span class="label">
@@ -245,7 +248,7 @@ defmodule CabinetWeb.CoreComponents do
 
   def input(%{type: "select"} = assigns) do
     ~H"""
-    <div class="fieldset mb-2">
+    <div class={@container_class || "fieldset mb-2"}>
       <label>
         <span :if={@label} class="label mb-1">{@label}</span>
         <select
@@ -266,7 +269,7 @@ defmodule CabinetWeb.CoreComponents do
 
   def input(%{type: "textarea"} = assigns) do
     ~H"""
-    <div class="fieldset mb-2">
+    <div class={@container_class || "fieldset mb-2"}>
       <label>
         <span :if={@label} class="label mb-1">{@label}</span>
         <textarea
@@ -301,7 +304,7 @@ defmodule CabinetWeb.CoreComponents do
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
-    <div class="fieldset mb-2">
+    <div class={@container_class || "fieldset mb-2"}>
       <label>
         <span :if={@label} class="label mb-1">{@label}</span>
         <input
@@ -335,6 +338,7 @@ defmodule CabinetWeb.CoreComponents do
   Renders a header with title.
   """
   attr :size, :string, values: ~w(small medium)
+  attr :class, :string, default: nil
 
   slot :inner_block, required: true
   slot :subtitle
@@ -343,16 +347,19 @@ defmodule CabinetWeb.CoreComponents do
   def header(assigns) do
     size_classes = %{
       "small" => %{
+        tag: "h3",
         container: "pb-2 lg:pb-4",
         header: "text-md font-medium font-mono leading-6",
         subtitle: ""
       },
       "medium" => %{
+        tag: "h2",
         container: "pb-2 lg:pb-4",
         header: "text-lg font-medium font-mono leading-6",
         subtitle: ""
       },
       nil => %{
+        tag: "h1",
         container: "pb-8 lg:pb-12",
         header: "text-xl font-semibold leading-8",
         subtitle: ""
@@ -365,11 +372,15 @@ defmodule CabinetWeb.CoreComponents do
       end)
 
     ~H"""
-    <header class={[@classes.container, @actions != [] && "flex items-center justify-between gap-6"]}>
+    <header class={[
+      @classes.container,
+      @actions != [] && "flex items-center justify-between gap-6",
+      @class
+    ]}>
       <div>
-        <h1 class={[@classes.header]}>
+        <.dynamic_tag tag_name={@classes.tag} class={[@classes.header]}>
           {render_slot(@inner_block)}
-        </h1>
+        </.dynamic_tag>
         <p class={[@classes.subtitle, "text-sm text-base-content/70"]}>
           <%= if @subtitle != [] do %>
             {render_slot(@subtitle)}

@@ -18,7 +18,7 @@ defmodule Cabinet.Schema.Invoice do
     field :total_gst, :decimal, virtual: true
     field :amount_due, :decimal, virtual: true
 
-    has_many :units, Unit
+    has_many :units, Unit, on_replace: :delete
     belongs_to :client, Client
 
     timestamps()
@@ -28,6 +28,6 @@ defmodule Cabinet.Schema.Invoice do
     invoice
     |> cast(attrs, [:term, :due])
     |> validate_required([:due])
-    |> cast_assoc(:client)
+    |> cast_assoc(:units, sort_param: :unit_sort, drop_param: :unit_drop)
   end
 end

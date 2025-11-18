@@ -4,61 +4,6 @@ defmodule CabinetWeb.AdminLive.Invoice.Show do
   alias Cabinet.Invoices
 
   @impl true
-  def render(assigns) do
-    ~H"""
-    <Layouts.admin
-      current_scope={@current_scope}
-      current_view={:invoice}
-    >
-      <%= if @live_action == :view do %>
-        <.header>
-          {format_refnum(@invoice.id)}
-
-          <:actions>
-            <.button
-              variant="primary"
-              patch={~p"/admin/invoice/#{@invoice.id}/edit"}
-              replace
-            >
-              Edit
-            </.button>
-          </:actions>
-        </.header>
-
-        <.detail_list>
-          <:item name="Client">
-            <.link navigate={~p"/admin/client/#{@invoice.client.id}"} class="link link-secondary">
-              {@invoice.client.name}
-            </.link>
-          </:item>
-
-          <:item name="Terms" class={@invoice.term || "italic text-base-content/50"}>
-            {@invoice.term || "N/A"}
-          </:item>
-
-          <:item name="Due Date">{@invoice.due}</:item>
-          <:item name="Subtotal">{@invoice.subtotal}</:item>
-        </.detail_list>
-      <% end %>
-
-      <%= if @live_action == :edit do %>
-        <.header>
-          Edit Invoice
-          <:subtitle>Editing invoice {format_refnum(@invoice.id)}</:subtitle>
-        </.header>
-
-        <.live_component
-          id="invoice-form"
-          module={CabinetWeb.AdminLive.Invoice.FormComponent}
-          invoice={@invoice}
-          cancel={JS.patch(~p"/admin/invoice/#{@invoice.id}", replace: true)}
-        />
-      <% end %>
-    </Layouts.admin>
-    """
-  end
-
-  @impl true
   def mount(_params, _session, socket) do
     clients = Invoices.list_clients(socket.assigns.current_scope)
 
