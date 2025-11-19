@@ -32,13 +32,15 @@ defmodule CabinetWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <.app_header
-      current_scope={@current_scope}
-      show_admin={!assigns[:admin_view]}
-      class="flex-none"
-    />
+    <div class="h-full flex flex-col">
+      <.app_header
+        current_scope={@current_scope}
+        show_admin={!assigns[:admin_view]}
+        class="flex-none"
+      />
 
-    <.main_container class={@class}>{render_slot(@inner_block)}</.main_container>
+      <.main_container class={@class}>{render_slot(@inner_block)}</.main_container>
+    </div>
     """
   end
 

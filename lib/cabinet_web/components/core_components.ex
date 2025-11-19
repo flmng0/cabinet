@@ -49,14 +49,16 @@ defmodule CabinetWeb.CoreComponents do
     """
   end
 
+  attr :class, :string, default: nil
+
   slot :item do
     attr :name, :string
-    attr :class, :string
+    attr :class, :any
   end
 
   def detail_list(assigns) do
     ~H"""
-    <dl class="grid grid-cols-[auto_1fr] gap-y-4 gap-x-8 align-items-center">
+    <dl class={[@class, "grid grid-cols-[auto_1fr] gap-y-4 gap-x-8 align-items-center"]}>
       <%= for item <- @item do %>
         <dt class="justify-self-end text-base font-mono leading-6 text-base-content/70">
           {item.name}:
