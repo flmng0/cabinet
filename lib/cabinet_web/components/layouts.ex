@@ -71,9 +71,9 @@ defmodule CabinetWeb.Layouts do
       |> assign_new(:current_view, fn -> nil end)
 
     ~H"""
-    <div class="drawer lg:drawer-open lg:bg-base-content lg:p-1">
+    <div class="drawer lg:drawer-open lg:bg-base-content">
       <input type="checkbox" id="admin_drawer" class="drawer-toggle" />
-      <div class="drawer-content bg-base-100 lg:rounded-md">
+      <div class="drawer-content bg-base-100 lg:rounded-md lg:m-1">
         <label
           class="sticky top-0 left-0 m-4 btn btn-soft btn-square btn-neutral drawer-button lg:hidden justify-self-start"
           for="admin_drawer"
@@ -110,7 +110,7 @@ defmodule CabinetWeb.Layouts do
       <nav class="drawer-side">
         <label for="admin_drawer" class="drawer-overlay" />
 
-        <div class="flex flex-col h-full w-72 max-w-screen shadow-md bg-base-content text-base-100">
+        <div class="flex flex-col h-screen overflow-y-auto w-72 max-w-screen shadow-md bg-base-content text-base-100">
           <hgroup class="py-8 px-4">
             <h1 class="text-lg lg:text-xl">Cabinet Admin Panel</h1>
             <p class="text-sm lg:text-base">Logged in as {@current_scope.user.email}</p>
