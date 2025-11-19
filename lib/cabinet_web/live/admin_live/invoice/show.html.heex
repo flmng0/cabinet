@@ -28,17 +28,25 @@
             </.link>
           </:item>
 
-          <:item name="Terms" class={@invoice.term || "italic text-base-content/50"}>
+          <:item name="Due Date">{@invoice.due}</:item>
+          <:item name="Terms" class={["mb-2", @invoice.term || "italic text-base-content/50"]}>
             {@invoice.term || "N/A"}
           </:item>
 
-          <:item name="Due Date">{@invoice.due}</:item>
-          <:item name="Subtotal">{@invoice.subtotal}</:item>
+          <:item name="Subtotal">
+            {@invoice.subtotal} <span class="text-sm text-base-content/50">AUD</span>
+          </:item>
+          <:item name="GST Applied">
+            {@invoice.total_gst}
+          </:item>
+          <:item name="Amount Due">
+            {@invoice.amount_due}
+          </:item>
         </.detail_list>
       </section>
 
-      <section>
-        <.header size="medium" class="mb-4">Invoice Units</.header>
+      <section class="space-y-4">
+        <.header size="medium">Invoice Units</.header>
 
         <.table id="invoice_units" rows={@invoice.units}>
           <:col :let={unit} label="Description">{unit.description}</:col>

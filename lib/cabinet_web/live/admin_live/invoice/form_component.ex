@@ -24,22 +24,22 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
             <div class="flex flex-row gap-2 mb-2">
               <input type="hidden" name="invoice[unit_sort][]" value={unit.index} />
 
-              <label class="floating-label">
+              <label class="floating-label grow">
                 <span :if={unit.index == 0}>Description</span>
                 <.input
                   field={unit[:description]}
                   type="text"
-                  container_class="grow"
+                  container_class=""
                   phx-mounted={unit.index > 0 && JS.focus()}
                 />
               </label>
-              <label class="floating-label">
-                <span :if={unit.index == 0}>Cost ($)</span>
-                <.input field={unit[:cost]} type="number" container_class="flex-1" />
-              </label>
-              <label class="floating-label">
+              <label class="floating-label w-24">
                 <span :if={unit.index == 0}>Count</span>
-                <.input field={unit[:count]} type="number" container_class="flex-1" />
+                <.input field={unit[:count]} type="number" container_class="" />
+              </label>
+              <label class="floating-label w-24">
+                <span :if={unit.index == 0}>Cost ($)</span>
+                <.input field={unit[:cost]} type="number" container_class="" />
               </label>
 
               <.button
@@ -78,9 +78,10 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
             const addButton = this.el.querySelector("button[value=new]");
 
             this.el.addEventListener("keypress", (e) => {
-              if (e.key !== "Enter") return;
+              if (e.key === "Enter" && e.target.tagName === "INPUT") {
                 e.preventDefault();
                 addButton.click();
+              }
             });
           }
         }
@@ -91,14 +92,13 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
 
   @impl true
   def update(assigns, socket) do
-    new? = is_nil(assigns[:invoice])
-    invoice = assigns[:invoice] || %Invoice{}
+    invoice = assigns.invoice
 
     initial_params =
-      if new? do
-        %{due: Date.shift(Date.utc_today(), week: 1)}
-      else
+      if Enum.empty?(invoice.units) do
         %{units: [%{}]}
+      else
+        %{}
       end
 
     socket =
