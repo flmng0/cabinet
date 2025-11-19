@@ -110,13 +110,13 @@ defmodule CabinetWeb.Layouts do
       <nav class="drawer-side">
         <label for="admin_drawer" class="drawer-overlay" />
 
-        <div class="h-full w-72 max-w-screen shadow-md bg-base-content text-base-100">
+        <div class="flex flex-col h-full w-72 max-w-screen shadow-md bg-base-content text-base-100">
           <hgroup class="py-8 px-4">
             <h1 class="text-lg lg:text-xl">Cabinet Admin Panel</h1>
             <p class="text-sm lg:text-base">Logged in as {@current_scope.user.email}</p>
           </hgroup>
 
-          <ul class="menu lg:menu-lg w-full gap-1">
+          <ul class="menu lg:menu-lg w-full gap-1 grow">
             <li :for={{key, route} <- @routes}>
               <.link
                 navigate={route.path}
@@ -127,6 +127,10 @@ defmodule CabinetWeb.Layouts do
               </.link>
             </li>
           </ul>
+
+          <.link class="btn btn-neutral text-base-100 btn-outline mx-2 my-4" href="/">
+            <.icon name="hero-home" /> Return Home
+          </.link>
         </div>
       </nav>
     </div>
