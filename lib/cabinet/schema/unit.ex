@@ -7,7 +7,7 @@ defmodule Cabinet.Schema.Unit do
   schema "units" do
     field :description, :string
     field :cost, :decimal
-    field :count, :integer
+    field :count, :decimal
 
     belongs_to :invoice, Invoice
   end

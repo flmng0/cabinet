@@ -24,7 +24,7 @@ defmodule Cabinet.Repo.Migrations.Invoices do
     create table(:units) do
       add :description, :string, null: false
       add :cost, :decimal, null: false
-      add :count, :integer, null: false
+      add :count, :decimal, null: false
 
       add :invoice_id, references(:invoices), null: false
     end
