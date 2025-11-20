@@ -8,6 +8,8 @@ defmodule CabinetWeb.InvoiceHTML do
 
   alias Cabinet.Schema.Invoice
 
+  embed_templates "invoice_html/*"
+
   slot :inner_block, required: true
 
   def section_label(assigns) do
@@ -39,6 +41,4 @@ defmodule CabinetWeb.InvoiceHTML do
     </span>
     """
   end
-
-  embed_templates "invoice_html/*"
 end

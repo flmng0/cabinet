@@ -58,7 +58,7 @@ defmodule CabinetWeb.InvoiceController do
 
   defp mock_invoice() do
     %Invoice{
-      id: 1,
+      id: 128,
       term: nil,
       due: ~D"2025-10-27",
       inserted_at: ~D"2025-10-20",

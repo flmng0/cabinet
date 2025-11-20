@@ -144,12 +144,17 @@ defmodule CabinetWeb.Layouts do
   """
   attr :current_scope, :map, default: nil
   attr :class, :string, default: nil
+  attr :soft, :boolean, default: false
 
   attr :show_admin, :boolean, default: true
 
   def app_header(assigns) do
     ~H"""
-    <header class={["bg-base-content text-base-100 navbar px-4 sm:px-6 lg:px-8 gap-4", @class]}>
+    <header class={[
+      "navbar px-4 sm:px-6 lg:px-8 gap-4",
+      if(@soft, do: "", else: "bg-base-content text-base-100"),
+      @class
+    ]}>
       <.button class="btn btn-ghost" href={~p"/"}>Home</.button>
 
       <div

@@ -18,9 +18,14 @@ defmodule CabinetWeb.Router do
   end
 
   scope "/", CabinetWeb do
+    pipe_through [:browser]
+
+    get "/", PageController, :home
+  end
+
+  scope "/", CabinetWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    get "/", InvoiceController, :index
     get "/invoice/:client/:refnum", InvoiceController, :view
   end
 
