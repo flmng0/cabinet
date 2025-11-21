@@ -57,6 +57,39 @@ defmodule CabinetWeb.Layouts do
     """
   end
 
+  attr :current_scope, :map, default: nil
+  attr :contact_name, :string, required: true
+
+  slot :inner_block, required: true
+  slot :cta
+
+  def home(assigns) do
+    ~H"""
+    <div class="h-full flex flex-col">
+      <.app_header current_scope={@current_scope} soft />
+
+      <div class="hero grow">
+        <div class="hero-content">
+          <div class="max-w-lg space-y-6">
+            <.header size="hero">
+              Cabinet Invoicing
+              <:subtitle>Self-hosted invoices for {@contact_name}.</:subtitle>
+            </.header>
+
+            {render_slot(@inner_block)}
+
+            <div class="flex justify-center">
+              <%= for cta <- @cta do %>
+                {render_slot(cta)}
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
   attr :current_view, :atom, required: true, values: ~w(client invoice)a
   attr :current_scope, :map, default: nil
 

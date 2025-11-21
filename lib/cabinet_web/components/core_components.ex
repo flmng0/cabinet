@@ -132,11 +132,15 @@ defmodule CabinetWeb.CoreComponents do
     include: ~w(href navigate patch method download name value disabled replace)
 
   attr :class, :string
-  attr :variant, :string, values: ~w(primary)
+  attr :variant, :string, values: ~w(primary hero-cta)
   slot :inner_block, required: true
 
   def button(%{rest: rest} = assigns) do
-    variants = %{"primary" => "btn-primary", nil => "btn-primary btn-soft"}
+    variants = %{
+      "primary" => "btn-primary",
+      "hero-cta" => "btn-primary btn-lg btn-wide",
+      nil => "btn-primary btn-soft"
+    }
 
     assigns =
       assign_new(assigns, :class, fn ->
@@ -339,7 +343,7 @@ defmodule CabinetWeb.CoreComponents do
   @doc """
   Renders a header with title.
   """
-  attr :size, :string, values: ~w(small medium)
+  attr :size, :string, values: ~w(small medium hero)
   attr :class, :string, default: nil
 
   slot :inner_block, required: true
@@ -358,6 +362,12 @@ defmodule CabinetWeb.CoreComponents do
         tag: "h2",
         container: "pb-2 lg:pb-4",
         header: "text-lg font-medium font-mono leading-6",
+        subtitle: ""
+      },
+      "hero" => %{
+        tag: "h1",
+        container: "pb-2 lg:pb-4",
+        header: "text-xl font-semibold leading-8",
         subtitle: ""
       },
       nil => %{
@@ -379,7 +389,7 @@ defmodule CabinetWeb.CoreComponents do
       @actions != [] && "flex items-center justify-between gap-6",
       @class
     ]}>
-      <div>
+      <hgroup>
         <.dynamic_tag tag_name={@classes.tag} class={[@classes.header]}>
           {render_slot(@inner_block)}
         </.dynamic_tag>
@@ -388,7 +398,7 @@ defmodule CabinetWeb.CoreComponents do
             {render_slot(@subtitle)}
           <% end %>
         </p>
-      </div>
+      </hgroup>
       <div class="flex-none">{render_slot(@actions)}</div>
     </header>
     """

@@ -1,0 +1,27 @@
+<div class="h-full flex flex-col">
+  <Layouts.app_header current_scope={@current_scope} soft />
+
+  <div class="hero grow">
+    <div class="hero-content">
+      <div class="max-w-lg space-y-6">
+        <.header size="hero">
+          Cabinet Invoicing
+          <:subtitle>Self-hosted invoices for {@contact_name}.</:subtitle>
+        </.header>
+
+        <p>
+          Log in below if you have received an invoice from {@contact_name}.
+        </p>
+        <p>
+          If you're interested in hosting your own instance of Cabinet, click
+          <.link class="link link-secondary" href="mailto:me@tmthy.dev">here</.link>
+          to contact <.link class="link link-secondary" href="https://tmthy.dev">Timothy Davis</.link>.
+        </p>
+
+        <div class="flex justify-center">
+          <.button variant="hero-cta" navigate={~p"/users/log-in"}>Log In</.button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

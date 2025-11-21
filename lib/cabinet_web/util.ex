@@ -1,4 +1,13 @@
 defmodule CabinetWeb.Util do
+  def pluralize(1, singular, _plural), do: singular
+  def pluralize(_count, _singular, plural), do: plural
+
+  def listify([part | rest]), do: listify(rest, part)
+  def listify([], acc), do: acc
+  def listify([part], acc), do: acc <> ", and " <> part
+  def listify([part | rest], ""), do: listify(rest, part)
+  def listify([part | rest], acc), do: listify(rest, acc <> ", " <> part)
+
   def format_date(%Date{} = date), do: Calendar.strftime(date, "%b %d, %Y")
 
   defp remove_spaces(text) when is_binary(text), do: Regex.replace(~r/\s/u, text, "")

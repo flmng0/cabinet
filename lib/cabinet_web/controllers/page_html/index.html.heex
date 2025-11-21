@@ -1,0 +1,10 @@
+<Layouts.home current_scope={@current_scope} contact_name={@contact_name}>
+  <p>Welcome back, {@current_scope.user.email}!</p>
+  
+<!-- TODO: New, overdue, and all invoices. -->
+  <.invoice_summary new={0} overdue={1} total={4} />
+
+  <:cta>
+    <.button variant="hero-cta" navigate={~p"/invoice"}>View Your Invoices</.button>
+  </:cta>
+</Layouts.home>
