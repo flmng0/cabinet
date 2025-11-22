@@ -5,7 +5,9 @@ defmodule CabinetWeb.AdminLive.Client.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :clients, Invoices.list_clients(socket.assigns.current_scope))}
+    clients = Invoices.list_clients(socket.assigns.current_scope, full?: true)
+
+    {:ok, stream(socket, :clients, clients)}
   end
 
   @impl true

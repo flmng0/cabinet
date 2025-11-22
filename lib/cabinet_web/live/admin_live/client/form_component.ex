@@ -19,6 +19,32 @@ defmodule CabinetWeb.AdminLive.Client.FormComponent do
 
         <.input field={f[:address]} type="textarea" label="Client Address" />
 
+        <fieldset class="fieldset items-start">
+          <span class="fieldset-label">Register Client Emails</span>
+
+          <.inputs_for :let={user} field={f[:users]}>
+            <input type="hidden" name="client[user_sort][]" value={user.index} />
+
+            <div class="grid grid-cols-[1fr_auto] items-start gap-2 mb-2">
+              <.input field={user[:email]} placeholder="Email" container_class="" />
+              <.button type="button" name="client[user_drop][]" value={user.index} variant="remove" phx-click={JS.dispatch("change")}>
+                Remove
+              </.button>
+            </div>
+          </.inputs_for>
+
+          <.button
+            type="button"
+            name="client[user_sort][]"
+            value="new"
+            variant="add"
+            class="justify-self-start"
+            phx-click={JS.dispatch("change")}
+          >
+            Add Client
+          </.button>
+        </fieldset>
+
         <div class="flex mt-4 gap-2 justify-end">
           <.button phx-click={@cancel} type="button">Cancel</.button>
           <.button variant="primary" type="submit">
@@ -32,10 +58,12 @@ defmodule CabinetWeb.AdminLive.Client.FormComponent do
 
   @impl true
   def update(assigns, socket) do
+    client = Map.get(assigns, :client, %Client{})
+
     socket =
       socket
-      |> assign(:client, assigns[:client] || %Client{})
-      |> assign(:cancel, assigns.cancel)
+      |> assign(:client, client)
+      |> assign(:cancel, assigns[:cancel])
       |> assign_form(%{})
 
     {:ok, socket}
@@ -45,7 +73,7 @@ defmodule CabinetWeb.AdminLive.Client.FormComponent do
     form =
       socket.assigns.client
       |> Client.changeset(params)
-      |> to_form(opts)
+      |> to_form(opts ++ [as: "client"])
 
     assign(socket, :form, form)
   end

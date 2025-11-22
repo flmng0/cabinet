@@ -2,6 +2,8 @@ defmodule Cabinet.Schema.Client do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Phoenix.Param, key: :shortcode}
+
   alias Cabinet.Auth.User
   alias Cabinet.Schema.Invoice
 
@@ -22,5 +24,6 @@ defmodule Cabinet.Schema.Client do
     |> cast(attrs, [:name, :shortcode, :address])
     |> validate_required([:name, :shortcode])
     |> validate_format(:shortcode, ~r/^\S+$/, message: "cannot include spaces")
+    |> cast_assoc(:users, sort_param: :user_sort, drop_param: :user_drop, with: &User.email_changeset/2)
   end
 end

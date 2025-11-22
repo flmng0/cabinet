@@ -188,7 +188,7 @@ defmodule CabinetWeb.Layouts do
       if(@soft, do: "", else: "bg-base-content text-base-100"),
       @class
     ]}>
-      <.button class="btn btn-ghost" href={~p"/"}>Home</.button>
+      <.button variant="ghost" href={~p"/"}>Home</.button>
 
       <div
         :if={@show_admin && Cabinet.Auth.Guards.is_superuser?(@current_scope)}
@@ -216,14 +216,14 @@ defmodule CabinetWeb.Layouts do
             {@current_scope.user.email}
           </li>
           <li>
-            <.link href={~p"/users/settings"}>Settings</.link>
+            <.button variant="ghost" href={~p"/users/settings"}>Settings</.button>
           </li>
           <li>
-            <.link href={~p"/users/log-out"} method="delete">Log out</.link>
+            <.button variant="ghost" href={~p"/users/log-out"} method="delete">Log out</.button>
           </li>
         <% else %>
           <li>
-            <.link href={~p"/users/log-in"}>Log in</.link>
+            <.button variant="ghost" href={~p"/users/log-in"}>Log in</.button>
           </li>
         <% end %>
       </ul>

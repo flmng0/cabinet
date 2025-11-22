@@ -114,7 +114,7 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
     form =
       socket.assigns.invoice
       |> Invoice.changeset(params)
-      |> to_form(opts)
+      |> to_form(opts ++ [as: "invoice"])
 
     assign(socket, :form, form)
   end

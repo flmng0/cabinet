@@ -18,17 +18,19 @@
     </:table_action>
   </.table>
 
-  <dialog class="modal" open={@live_action == :new}>
-    <div class="modal-box">
-      <.header>Create New Client</.header>
-      <.live_component
-        module={CabinetWeb.AdminLive.Client.FormComponent}
-        id="new-client-form"
-        cancel={JS.patch(~p"/admin/client")}
-      />
-    </div>
-    <.link patch={~p"/admin/client"} class="modal-backdrop">Close</.link>
-  </dialog>
+  <.modal
+    :if={@live_action == :new}
+    id="newClientModal"
+    auto_open
+    on_close={JS.patch(~p"/admin/client")}
+  >
+    <.header>Create New Client</.header>
+    <.live_component
+      module={CabinetWeb.AdminLive.Client.FormComponent}
+      id="newClientForm"
+      cancel={JS.patch(~p"/admin/client")}
+    />
+  </.modal>
 
   <:util click="clear-all">Clear Clients</:util>
 </Layouts.admin>

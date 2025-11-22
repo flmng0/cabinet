@@ -69,6 +69,46 @@ defmodule CabinetWeb.CoreComponents do
     """
   end
 
+  attr :id, :string, required: true
+  attr :on_close, JS, default: nil
+  attr :auto_open, :boolean, default: false
+
+  slot :inner_block, required: true
+
+  def modal(assigns) do
+    ~H"""
+    <dialog
+      id={@id}
+      class="modal"
+      phx-hook=".Modal"
+      data-autoopen={@auto_open}
+      data-onclose={@on_close}
+    >
+      <div class="modal-box">{render_slot(@inner_block)}</div>
+      <button :if={@on_close} class="cursor-pointer modal-backdrop" phx-click={@on_close}>
+        Close
+      </button>
+    </dialog>
+    <script :type={ColocatedHook} name=".Modal">
+      export default {
+        mounted() {
+          console.log(this.el.dataset);
+          if (this.el.dataset.autoopen !== undefined) {
+            this.el.showModal();
+          }
+          this.handleEvent("show", () => this.el.showModal());
+
+          if (this.el.dataset.onclose) {
+            this.el.onclose = () => {
+              this.liveSocket.execJS(this.el, this.el.dataset.onclose);
+            };
+          }
+        }
+      }
+    </script>
+    """
+  end
+
   ### DEFAULTS
 
   @doc """
@@ -132,20 +172,20 @@ defmodule CabinetWeb.CoreComponents do
     include: ~w(href navigate patch method download name value disabled replace)
 
   attr :class, :string
-  attr :variant, :string, values: ~w(primary hero-cta)
+  attr :variant, :string, values: ~w(primary hero-cta add remove ghost)
   slot :inner_block, required: true
 
   def button(%{rest: rest} = assigns) do
     variants = %{
       "primary" => "btn-primary",
-      "hero-cta" => "btn-primary btn-lg btn-wide",
+      "hero-cta" => "btn-primary btn-lg",
+      "add" => "btn-success btn-sm btn-outline",
+      "remove" => "btn-error text-xs btn-outline",
+      "ghost" => "btn-ghost",
       nil => "btn-primary btn-soft"
     }
 
-    assigns =
-      assign_new(assigns, :class, fn ->
-        ["btn", Map.fetch!(variants, assigns[:variant])]
-      end)
+    assigns = assign(assigns, :class, ["btn", Map.fetch!(variants, assigns[:variant]), assigns[:class]])
 
     if rest[:href] || rest[:navigate] || rest[:patch] do
       ~H"""

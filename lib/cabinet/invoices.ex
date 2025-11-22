@@ -44,12 +44,12 @@ defmodule Cabinet.Invoices do
   end
 
   def list_clients(%Scope{user: user}, opts \\ []) when is_superuser(user) do
-    query =
+    query = 
       if Keyword.get(opts, :full?, false) do
-        from Schema.Client, preload: [:users, :invoices]
-      else
-        Schema.Client
-      end
+      from Schema.Client, preload: [:users, :invoices]
+    else
+      Schema.Client
+    end
 
     Repo.all(query)
   end
@@ -57,7 +57,7 @@ defmodule Cabinet.Invoices do
   def get_client(%Scope{user: user}, id, opts \\ []) when is_superuser(user) do
     query =
       if Keyword.get(opts, :full?, false) do
-        from Schema.Client, preload: [:invoices]
+        from Schema.Client, preload: [:users, :invoices]
       else
         Schema.Client
       end
@@ -78,13 +78,20 @@ defmodule Cabinet.Invoices do
     |> Repo.update()
   end
 
-  def list_invoices(%Scope{user: user}, opts \\ []) when is_superuser(user) do
+  def list_invoices(%Scope{user: user}, opts \\ []) do
+    query = if is_superuser?(user) do
+      Schema.Invoice
+    else
+      from i in Schema.Invoice,
+        where: i.client_id == ^user.client_id
+    end
+
     if Keyword.get(opts, :full?, false) do
-      query = from Schema.Invoice, preload: [:units, :client]
+      query = from query, preload: [:units, :client]
 
       Repo.all(query) |> Enum.map(&with_virtual_fields/1)
     else
-      Repo.all(Schema.Invoice)
+      Repo.all(query)
     end
   end
 
@@ -128,5 +135,18 @@ defmodule Cabinet.Invoices do
     invoice
     |> Schema.Invoice.changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+  Mark an invoice as viewed, only if the user is registered to the client.
+  """
+  def view_invoice(%Scope{user: %User{client: client}}, %Schema.Invoice{client: client} = invoice) do
+    invoice
+    |> Schema.Invoice.view_changeset()
+    |> Repo.update()
+  end
+
+  def view_invoice(%Scope{user: user}, %Schema.Invoice{} = invoice) when is_superuser(user) do
+    {:ok, invoice}
   end
 end
