@@ -17,8 +17,9 @@ defmodule Cabinet.Auth.Scope do
   """
 
   alias Cabinet.Auth.User
+  alias Cabinet.Schema.Client
 
-  defstruct user: nil
+  defstruct user: nil, client: nil
 
   @doc """
   Creates a scope for the given user.
@@ -30,4 +31,9 @@ defmodule Cabinet.Auth.Scope do
   end
 
   def for_user(nil), do: nil
+
+  def put_client(%__MODULE__{} = scope, %Client{} = client) do
+    %{scope | client: client}
+  end
+  def put_client(%__MODULE__{} = scope, nil), do: scope
 end

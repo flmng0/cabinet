@@ -169,6 +169,20 @@ defmodule CabinetWeb.UserAuth do
   end
 
   @doc """
+  Assigns the client of the current user to the scope
+  """
+  def assign_client_to_scope(conn, _opts) do
+    current_scope = conn.assigns.current_scope
+
+    if current_scope && current_scope.user do
+      client = Cabinet.Auth.get_client_for_user(current_scope.user)
+      assign(conn, :current_scope, Cabinet.Auth.Scope.put_client(current_scope, client))
+    else
+      conn
+    end
+  end
+
+  @doc """
   Disconnects existing sockets for the given tokens.
   """
   def disconnect_sessions(tokens) do

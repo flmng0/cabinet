@@ -11,38 +11,6 @@ defmodule Cabinet.Invoices do
 
   import Cabinet.Auth.Guards
 
-  def with_virtual_fields(nil), do: nil
-
-  def with_virtual_fields(%Schema.Invoice{} = invoice) do
-    due_diff = Date.diff(Date.utc_today(), invoice.due)
-    late? = due_diff > 0
-
-    subtotal =
-      Enum.reduce(invoice.units, 0, fn %Schema.Unit{} = unit, acc ->
-        unit.cost
-        |> Decimal.mult(unit.count)
-        |> Decimal.add(acc)
-      end)
-
-    total_gst =
-      if invoice.gst do
-        Decimal.mult(subtotal, Decimal.new(1, 10, -2)) |> Decimal.round(2)
-      else
-        Decimal.new("0.00")
-      end
-
-    amount_due = Decimal.add(subtotal, total_gst) |> Decimal.round(2)
-
-    %{
-      invoice
-      | late?: late?,
-        days_overdue: due_diff,
-        subtotal: subtotal,
-        total_gst: total_gst,
-        amount_due: amount_due
-    }
-  end
-
   def list_clients(%Scope{user: user}, opts \\ []) when is_superuser(user) do
     query = 
       if Keyword.get(opts, :full?, false) do
@@ -78,45 +46,26 @@ defmodule Cabinet.Invoices do
     |> Repo.update()
   end
 
-  def list_invoices(%Scope{user: user}, opts \\ []) do
-    query = if is_superuser?(user) do
-      Schema.Invoice
-    else
-      from i in Schema.Invoice,
-        where: i.client_id == ^user.client_id
-    end
+  def list_invoices(scope, opts \\ [])
+  def list_invoices(%Scope{user: user}, opts) when is_superuser(user) do
+    Schema.Invoice.query(opts) |> Repo.all()
+  end
 
-    if Keyword.get(opts, :full?, false) do
-      query = from query, preload: [:units, :client]
+  def list_invoices(%Scope{client: client}, opts) do
+    query = from invoice in Schema.Invoice, where: invoice.client_id == ^client.id
 
-      Repo.all(query) |> Enum.map(&with_virtual_fields/1)
-    else
-      Repo.all(query)
-    end
+    Schema.Invoice.query(query, opts) |> Repo.all()
   end
 
   def get_invoice(scope, id, opts \\ [])
 
   def get_invoice(%Scope{user: user}, id, opts) when is_superuser(user) do
-    if Keyword.get(opts, :full?, false) do
-      query = from Schema.Invoice, preload: [:units, :client]
-      Repo.get(query, id) |> with_virtual_fields()
-    else
-      Repo.get(Schema.Invoice, id)
-    end
+    Schema.Invoice.query(opts) |> Repo.get(id)
   end
 
-  def get_invoice(%Scope{user: user}, id, opts) do
-    %User{client_id: client_id} = Repo.preload(user, [:client])
-
-    query = from e in Schema.Invoice, where: e.client_id == ^client_id
-
-    if Keyword.get(opts, :full?, false) do
-      query = from query, preload: [:units]
-      Repo.get(query, id) |> with_virtual_fields()
-    else
-      Repo.get(query, id)
-    end
+  def get_invoice(%Scope{client: client}, id, opts) do
+    query = from e in Schema.Invoice, where: e.client_id == ^client.id
+    Schema.Invoice.query(query, opts) |> Repo.get(id)
   end
 
   def create_invoice(scope, client) do

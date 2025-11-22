@@ -11,6 +11,7 @@ defmodule CabinetWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_scope_for_user
+    plug :assign_client_to_scope
   end
 
   pipeline :api do
@@ -26,6 +27,7 @@ defmodule CabinetWeb.Router do
   scope "/", CabinetWeb do
     pipe_through [:browser, :require_authenticated_user]
 
+    get "/invoice/:client", InvoiceController, :index
     get "/invoice/:client/:refnum", InvoiceController, :view
   end
 

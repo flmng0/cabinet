@@ -4,9 +4,11 @@ defmodule CabinetWeb.InvoiceController do
   @refnum_prefix "INV-"
   alias Cabinet.Invoices
 
-  def index(conn, _params) do
-    # Cabinet.Invoices.get_invoices(conn.assigns.current_scope)
-    view_mock(conn, _params)
+  def index(conn, %{"client" => client}) do
+    # with {:ok, invoices} <- Cabinet.Invoices.get_invoices(conn.assigns.current_scope, client) do
+    #
+    # end
+
   end
 
   def view(conn, %{"client" => client, "refnum" => refnum} = _params) do
@@ -61,6 +63,13 @@ defmodule CabinetWeb.InvoiceController do
       id: 128,
       term: nil,
       due: ~D"2025-10-27",
+      late?: true,
+      days_overdue: 3,
+
+      subtotal: Decimal.new("480.0000"),
+      total_gst: Decimal.new("0.000"),
+      amount_due: Decimal.new("480.000"),
+
       inserted_at: ~D"2025-10-20",
       gst: false,
       units: [
@@ -81,6 +90,5 @@ defmodule CabinetWeb.InvoiceController do
         address: "32 Fake Street\nSUBITHA WZ 2025"
       }
     }
-    |> Cabinet.Invoices.with_virtual_fields()
   end
 end

@@ -7,7 +7,7 @@
 
       <section>
         <.section_label>Amount Due</.section_label>
-        <var class="text-4xl font-medium not-italic">{@invoice.amount_due}</var>
+        <var class="text-4xl font-medium not-italic">{format_money(@invoice.amount_due)}</var>
         <span class="align-top text-base-content/60">AUD</span>
       </section>
 
@@ -73,7 +73,7 @@
           <tbody>
             <tr>
               <th span="row">Subtotal</th>
-              <td class="text-right">{@invoice.subtotal}</td>
+              <td class="text-right">{format_money(@invoice.subtotal)}</td>
             </tr>
             <tr>
               <th span="row">
@@ -82,12 +82,12 @@
               </th>
               <td class="text-right">
                 <small :if={!@invoice.gst} class="text-xs">(no GST applied)</small>
-                {@invoice.total_gst}
+                {format_money(@invoice.total_gst)}
               </td>
             </tr>
             <tr class="bg-base-200 text-base-content">
               <th span="row">Total amount due</th>
-              <td class="text-base md:text-lg text-right">{@invoice.amount_due}</td>
+              <td class="text-base md:text-lg text-right">{format_money(@invoice.amount_due)}</td>
             </tr>
           </tbody>
         </table>

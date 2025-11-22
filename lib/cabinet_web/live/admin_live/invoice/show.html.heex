@@ -34,13 +34,13 @@
           </:item>
 
           <:item name="Subtotal">
-            {@invoice.subtotal} <span class="text-sm text-base-content/50">AUD</span>
+            {format_money(@invoice.subtotal)} <span class="text-sm text-base-content/50">AUD</span>
           </:item>
           <:item name="GST Applied">
-            {@invoice.total_gst}
+            {format_money(@invoice.total_gst)}
           </:item>
           <:item name="Amount Due">
-            {@invoice.amount_due}
+            {format_money(@invoice.amount_due)}
           </:item>
         </.detail_list>
       </section>

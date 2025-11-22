@@ -42,6 +42,7 @@ defmodule Cabinet.Auth do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_client_for_user(%User{} = user), do: Repo.one(Ecto.assoc(user, :client))
   ## User registration
 
   @doc """

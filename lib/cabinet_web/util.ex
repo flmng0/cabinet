@@ -8,6 +8,8 @@ defmodule CabinetWeb.Util do
   def listify([part | rest], ""), do: listify(rest, part)
   def listify([part | rest], acc), do: listify(rest, acc <> ", " <> part)
 
+  def format_money(%Decimal{} = d), do: Decimal.round(d, 2)
+
   def format_date(%Date{} = date), do: Calendar.strftime(date, "%b %d, %Y")
 
   defp remove_spaces(text) when is_binary(text), do: Regex.replace(~r/\s/u, text, "")
