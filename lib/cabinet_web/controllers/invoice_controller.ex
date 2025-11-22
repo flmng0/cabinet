@@ -5,23 +5,22 @@ defmodule CabinetWeb.InvoiceController do
   alias Cabinet.Invoices
 
   def index(conn, _params) do
-    if invoices = Invoices.list_invoices(conn.assigns.current_scope) do
+    if invoices = Invoices.list_invoices(conn.assigns.current_scope, full?: true) do
       conn
-        |> assign_business()
-        |> assign(:invoices, invoices)
-        |> render(:index)
+      |> assign_business()
+      |> assign(:invoices, invoices)
+      |> assign(:page_title, "View Invoices")
+      |> render(:index)
     else
       raise CabinetWeb.NotFoundError, "Client has no invoices"
     end
-    # with {:ok, invoices} <- Cabinet.Invoices.get_invoices(conn.assigns.current_scope, client) do
-    #
-    # end
-
   end
 
   def view(conn, %{"refnum" => refnum}) do
     with {:ok, refnum} <- parse_refnum(refnum) do
       if invoice = Invoices.get_invoice(conn.assigns.current_scope, refnum, full?: true) do
+        Invoices.view_invoice(conn.assigns.current_scope, invoice)
+
         conn
         |> assign_business()
         |> assign_invoice(invoice)
@@ -73,11 +72,9 @@ defmodule CabinetWeb.InvoiceController do
       due: ~D"2025-10-27",
       late?: true,
       days_overdue: 3,
-
       subtotal: Decimal.new("480.0000"),
       total_gst: Decimal.new("0.000"),
       amount_due: Decimal.new("480.000"),
-
       inserted_at: ~D"2025-10-20",
       gst: false,
       units: [

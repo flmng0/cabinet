@@ -178,14 +178,15 @@ defmodule CabinetWeb.CoreComponents do
   def button(%{rest: rest} = assigns) do
     variants = %{
       "primary" => "btn-primary",
-      "hero-cta" => "btn-primary btn-lg",
+      "hero-cta" => "btn-primary btn-lg btn-wide",
       "add" => "btn-success btn-sm btn-outline",
       "remove" => "btn-error text-xs btn-outline",
       "ghost" => "btn-ghost",
       nil => "btn-primary btn-soft"
     }
 
-    assigns = assign(assigns, :class, ["btn", Map.fetch!(variants, assigns[:variant]), assigns[:class]])
+    assigns =
+      assign(assigns, :class, ["btn", Map.fetch!(variants, assigns[:variant]), assigns[:class]])
 
     if rest[:href] || rest[:navigate] || rest[:patch] do
       ~H"""

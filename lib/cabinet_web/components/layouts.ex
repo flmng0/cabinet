@@ -78,7 +78,7 @@ defmodule CabinetWeb.Layouts do
 
             {render_slot(@inner_block)}
 
-            <div class="flex justify-center">
+            <div class="flex justify-center mt-10">
               <%= for cta <- @cta do %>
                 {render_slot(cta)}
               <% end %>

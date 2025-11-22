@@ -12,9 +12,11 @@ defmodule Cabinet.Repo.Migrations.Invoices do
     end
 
     create table(:invoices) do
+      add :title, :string
       add :term, :string
       add :due, :date
       add :gst, :boolean
+      add :viewed, :boolean, default: false
 
       add :client_id, references(:clients)
 

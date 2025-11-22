@@ -14,7 +14,8 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
         phx-submit="submit"
         phx-change="validate"
       >
-        <.input field={f[:due]} label="Due Date" type="date" />
+        <.input field={f[:title]} label="Title" />
+        <.input field={f[:due]} label="Due Date" type="date" required />
         <.input field={f[:term]} label="Terms" type="textarea" />
 
         <div id="invoice_untis" phx-hook=".ReturnInsert" class="space-y-2">

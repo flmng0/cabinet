@@ -1,5 +1,36 @@
-<Layouts.app flash={@flash} current_scope={@current_scope}>
-  <ul>
-    <li :for={invoice <- @invoices}>{format_refnum(invoice.id)}</li>
+<Layouts.app current_scope={@current_scope} class="bg-base-200">
+  <ul class="flex flex-col gap-3">
+    <li :for={invoice <- @invoices} class="card bg-base-100 shadow-sm">
+      <div class="card-body">
+        <div class="flex justify-between items-center gap-2">
+          <span class={[
+            "card-title grow",
+            invoice.title || "font-normal italic text-base-content/70"
+          ]}>
+            {invoice.title || "No Title"}
+          </span>
+          <span :if={invoice.late?} class="badge badge-error badge-sm">Late</span>
+          <span class="font-mono text-base-content/70 text-sm">
+            {format_refnum(invoice.id)}
+          </span>
+        </div>
+
+        <section>
+          <.section_label>Amount Due</.section_label>
+          <var>{format_money(invoice.amount_due)}</var>
+        </section>
+
+        <section>
+          <.section_label>Due Date</.section_label>
+          <.due_date invoice={invoice} />
+        </section>
+
+        <div class="justify-end card-actions">
+          <.link href={~p"/invoice/#{invoice}"} class="link link-primary text-sm text-right">
+            View Details
+          </.link>
+        </div>
+      </div>
+    </li>
   </ul>
 </Layouts.app>

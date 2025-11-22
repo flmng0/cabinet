@@ -12,12 +12,12 @@ defmodule Cabinet.Invoices do
   import Cabinet.Auth.Guards
 
   def list_clients(%Scope{user: user}, opts \\ []) when is_superuser(user) do
-    query = 
+    query =
       if Keyword.get(opts, :full?, false) do
-      from Schema.Client, preload: [:users, :invoices]
-    else
-      Schema.Client
-    end
+        from Schema.Client, preload: [:users, :invoices]
+      else
+        Schema.Client
+      end
 
     Repo.all(query)
   end
@@ -47,6 +47,7 @@ defmodule Cabinet.Invoices do
   end
 
   def list_invoices(scope, opts \\ [])
+
   def list_invoices(%Scope{user: user}, opts) when is_superuser(user) do
     Schema.Invoice.query(opts) |> Repo.all()
   end
@@ -55,6 +56,17 @@ defmodule Cabinet.Invoices do
     query = from invoice in Schema.Invoice, where: invoice.client_id == ^client.id
 
     Schema.Invoice.query(query, opts) |> Repo.all()
+  end
+
+  def get_invoice_counts(%Scope{} = scope) do
+    query =
+      if is_superuser?(scope.user) do
+        Schema.Invoice
+      else
+        from invoice in Schema.Invoice, where: invoice.client_id == ^scope.client.id
+      end
+
+    Schema.Invoice.counts_query(query) |> Repo.one()
   end
 
   def get_invoice(scope, id, opts \\ [])
@@ -89,7 +101,10 @@ defmodule Cabinet.Invoices do
   @doc """
   Mark an invoice as viewed, only if the user is registered to the client.
   """
-  def view_invoice(%Scope{user: %User{client: client}}, %Schema.Invoice{client: client} = invoice) do
+  def view_invoice(
+        %Scope{user: %User{client_id: client_id}},
+        %Schema.Invoice{client_id: client_id} = invoice
+      ) do
     invoice
     |> Schema.Invoice.view_changeset()
     |> Repo.update()

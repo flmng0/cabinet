@@ -14,10 +14,10 @@ defmodule CabinetWeb.PageHTML do
 
   def invoice_summary(assigns) do
     assigns =
-      assign_new(assigns, :parts, fn %{total: total, new: new, overdue: overdue} ->
-        parts = ["You have #{total} #{pluralize(total, "invoice", "invoices")}"]
+      assign_new(assigns, :parts, fn %{new: new, overdue: overdue} ->
+        parts = []
 
-        parts = if new > 0, do: parts ++ ["#{new} you have not viewed"], else: parts
+        parts = if new > 0, do: parts ++ ["#{new} of which you have not viewed"], else: parts
         parts = if overdue > 0, do: parts ++ ["#{overdue} of which are overdue"], else: parts
 
         parts
@@ -25,7 +25,12 @@ defmodule CabinetWeb.PageHTML do
 
     ~H"""
     <p>
-      {listify(@parts)}.
+      You have {@total} {pluralize(@total, "invoice", "invoices")};
+      <%= if Enum.empty?(@parts) do %>
+        none of which are overdue or you have not viewed.
+      <% else %>
+        {listify(@parts)}.
+      <% end %>
     </p>
     """
   end
