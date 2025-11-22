@@ -36,6 +36,16 @@ defmodule Cabinet.Schema.Invoice do
     change(invoice, viewed: true)
   end
 
+  def with_overdue_status(query \\ __MODULE__) do
+    today = Date.utc_today()
+
+    from invoice in query,
+      select_merge: %{
+        late?: ^today > invoice.due,
+        days_overdue: ^today - invoice.due
+      }
+  end
+
   def with_virtual_fields(query \\ __MODULE__) do
     inner_query = from invoice in __MODULE__, 
       join: unit in assoc(invoice, :units), 
@@ -49,24 +59,27 @@ defmodule Cabinet.Schema.Invoice do
     
     today = Date.utc_today()
 
-    query = from invoice in query,
-      join: totals in subquery(inner_query),
+    from invoice in with_overdue_status(query),
+      left_join: totals in subquery(inner_query),
       on: totals.invoice_id == invoice.id,
       select_merge: %{
-        subtotal: totals.subtotal,
-        total_gst: totals.subtotal * totals.gst_percent,
-        amount_due: totals.subtotal * (1 + totals.gst_percent),
-        late?: ^today > invoice.due,
-        days_overdue: ^today - invoice.due
+        subtotal: coalesce(totals.subtotal, 0),
+        total_gst: coalesce(totals.subtotal * totals.gst_percent, 0),
+        amount_due: coalesce(totals.subtotal * (1 + totals.gst_percent), 0)
       }
   end
 
   def query(opts), do: query(__MODULE__, opts)
   def query(query, opts) do
-    if Keyword.get(opts, :full?, false) do
-      from invoice in with_virtual_fields(query), preload: [:units, :client]
-    else
-      query
+    cond do
+      Keyword.get(opts, :full?, false) ->
+        from with_virtual_fields(query), preload: [:units, :client]
+
+      Keyword.get(opts, :with_status?, false) ->
+        from with_overdue_status(query), preload: [:client]
+
+      true ->
+        query
     end
   end
 end

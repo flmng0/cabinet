@@ -35,7 +35,7 @@ defmodule CabinetWeb.AdminLive.Invoice.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    invoices = Invoices.list_invoices(socket.assigns.current_scope, full?: true)
+    invoices = Invoices.list_invoices(socket.assigns.current_scope, with_status?: true)
 
     socket = socket |> assign(:page_title, "Invoices") |> stream(:invoices, invoices)
 

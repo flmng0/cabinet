@@ -1,1 +1,5 @@
-<Layouts.app></Layouts.app>
+<Layouts.app flash={@flash} current_scope={@current_scope}>
+  <ul>
+    <li :for={invoice <- @invoices}>{format_refnum(invoice.id)}</li>
+  </ul>
+</Layouts.app>

@@ -4,16 +4,24 @@ defmodule CabinetWeb.InvoiceController do
   @refnum_prefix "INV-"
   alias Cabinet.Invoices
 
-  def index(conn, %{"client" => client}) do
+  def index(conn, _params) do
+    if invoices = Invoices.list_invoices(conn.assigns.current_scope) do
+      conn
+        |> assign_business()
+        |> assign(:invoices, invoices)
+        |> render(:index)
+    else
+      raise CabinetWeb.NotFoundError, "Client has no invoices"
+    end
     # with {:ok, invoices} <- Cabinet.Invoices.get_invoices(conn.assigns.current_scope, client) do
     #
     # end
 
   end
 
-  def view(conn, %{"client" => client, "refnum" => refnum} = _params) do
+  def view(conn, %{"refnum" => refnum}) do
     with {:ok, refnum} <- parse_refnum(refnum) do
-      if invoice = Invoices.get_invoice(client, refnum, full?: true) do
+      if invoice = Invoices.get_invoice(conn.assigns.current_scope, refnum, full?: true) do
         conn
         |> assign_business()
         |> assign_invoice(invoice)

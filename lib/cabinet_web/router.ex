@@ -27,8 +27,8 @@ defmodule CabinetWeb.Router do
   scope "/", CabinetWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    get "/invoice/:client", InvoiceController, :index
-    get "/invoice/:client/:refnum", InvoiceController, :view
+    get "/invoice", InvoiceController, :index
+    get "/invoice/:refnum", InvoiceController, :view
   end
 
   scope "/admin", CabinetWeb do

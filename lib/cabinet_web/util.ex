@@ -10,7 +10,9 @@ defmodule CabinetWeb.Util do
 
   def format_money(%Decimal{} = d), do: Decimal.round(d, 2)
 
-  def format_date(%Date{} = date), do: Calendar.strftime(date, "%b %d, %Y")
+  def format_date(date) when is_struct(date, NaiveDateTime) or is_struct(date, Date) do 
+    Calendar.strftime(date, "%b %d, %Y")
+  end
 
   defp remove_spaces(text) when is_binary(text), do: Regex.replace(~r/\s/u, text, "")
 
