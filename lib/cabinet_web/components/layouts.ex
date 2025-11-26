@@ -184,49 +184,53 @@ defmodule CabinetWeb.Layouts do
   def app_header(assigns) do
     ~H"""
     <header class={[
-      "navbar px-4 sm:px-6 lg:px-8 gap-4",
+      "navbar justify-between px-4 sm:px-6 lg:px-8 gap-4",
       if(@soft, do: "", else: "bg-base-content text-base-100"),
       @class
     ]}>
-      <.button variant="ghost" href={~p"/"}>Home</.button>
+      <div>
+        <.button variant="ghost" href={~p"/"}>Home</.button>
 
-      <div
-        :if={@show_admin && Cabinet.Auth.Guards.is_superuser?(@current_scope)}
-        class="dropdown dropdown-hover group"
-      >
-        <div tabindex="0" role="button" class="btn btn-ghost">
-          Admin <.icon name="hero-chevron-down" class="size-3" />
-        </div>
-        <ul
-          tabindex="-1"
-          class="menu dropdown-content bg-base-100 text-base-content z-1 w-52 p-2 shadow-sm rounded-box"
+        <div
+          :if={@show_admin && Cabinet.Auth.Guards.is_superuser?(@current_scope)}
+          class="dropdown dropdown-hover group"
         >
-          <li :for={{key, route} <- CabinetWeb.AdminLive.Routes.routes()}>
-            <.link navigate={route.path}>
-              <.icon name={route.icon} />
-              {route.title}
-            </.link>
-          </li>
-        </ul>
+          <div tabindex="0" role="button" class="btn btn-ghost">
+            Admin <.icon name="hero-chevron-down" class="size-3" />
+          </div>
+          <ul
+            tabindex="-1"
+            class="menu dropdown-content bg-base-100 text-base-content z-1 w-52 p-2 shadow-sm rounded-box"
+          >
+            <li :for={{key, route} <- CabinetWeb.AdminLive.Routes.routes()}>
+              <.link navigate={route.path}>
+                <.icon name={route.icon} />
+                {route.title}
+              </.link>
+            </li>
+          </ul>
+        </div>
       </div>
 
-      <ul class="menu menu-horizontal w-full relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
-        <%= if @current_scope do %>
-          <li>
-            {@current_scope.user.email}
-          </li>
-          <li>
-            <.button variant="ghost" href={~p"/users/settings"}>Settings</.button>
-          </li>
-          <li>
-            <.button variant="ghost" href={~p"/users/log-out"} method="delete">Log out</.button>
-          </li>
-        <% else %>
-          <li>
-            <.button variant="ghost" href={~p"/users/log-in"}>Log in</.button>
-          </li>
-        <% end %>
-      </ul>
+      <%= if @current_scope do %>
+        <details class="dropdown dropdown-end" phx-click-away={JS.remove_attribute("open")}>
+          <summary class="btn btn-ghost btn-square">
+            <.icon name="hero-user-solid" />
+          </summary>
+
+          <ul class="dropdown-content menu bg-base-200 rounded-box shadow-sm text-black">
+            <li class="menu-title">
+              {@current_scope.user.email}
+            </li>
+            <li><.link href={~p"/users/settings"}>Settings</.link></li>
+            <li><.link href={~p"/users/log-out"} method="delete">Log out</.link></li>
+          </ul>
+        </details>
+      <% else %>
+        <ul class="menu menu-horizontal">
+          <.link href={~p"/users/log-in"}>Log in</.link>
+        </ul>
+      <% end %>
     </header>
     """
   end
