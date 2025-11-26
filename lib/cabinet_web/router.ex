@@ -22,13 +22,13 @@ defmodule CabinetWeb.Router do
     pipe_through [:browser]
 
     get "/", PageController, :home
+    get "/invoice/:refnum", InvoiceController, :view
   end
 
   scope "/", CabinetWeb do
     pipe_through [:browser, :require_authenticated_user]
 
     get "/invoice", InvoiceController, :index
-    get "/invoice/:refnum", InvoiceController, :view
   end
 
   scope "/admin", CabinetWeb do

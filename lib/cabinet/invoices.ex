@@ -3,11 +3,13 @@ defmodule Cabinet.Invoices do
   Context encapsulating methods for invoices.
   """
 
+  alias Cabinet.AccessToken
+  alias Cabinet.Auth.Scope
+  alias Cabinet.Auth.User
   alias Cabinet.Repo
-  import Ecto.Query, only: [from: 2]
-
   alias Cabinet.Schema
-  alias Cabinet.Auth.{Scope, User}
+
+  import Ecto.Query, only: [from: 2]
 
   import Cabinet.Auth.Guards
 
@@ -80,6 +82,12 @@ defmodule Cabinet.Invoices do
     Schema.Invoice.query(query, opts) |> Repo.get(id)
   end
 
+  def get_invoice(%AccessToken{invoice_id: id}, id, opts) do
+    Schema.Invoice.query(opts) |> Repo.get(id)
+  end
+
+  def get_invoice(_, _id, _opts), do: nil
+
   def create_invoice(scope, client) do
     create_invoice(scope, client, Date.shift(Date.utc_today(), week: 1))
   end
@@ -108,9 +116,9 @@ defmodule Cabinet.Invoices do
     invoice
     |> Schema.Invoice.view_changeset()
     |> Repo.update()
+
+    :ok
   end
 
-  def view_invoice(%Scope{user: user}, %Schema.Invoice{} = invoice) when is_superuser(user) do
-    {:ok, invoice}
-  end
+  def view_invoice(_scope, _invoice), do: nil
 end

@@ -172,7 +172,7 @@ defmodule CabinetWeb.CoreComponents do
     include: ~w(href navigate patch method download name value disabled replace)
 
   attr :class, :string
-  attr :variant, :string, values: ~w(primary hero-cta add remove ghost)
+  attr :variant, :string, values: ~w(primary hero-cta add remove ghost outline)
   slot :inner_block, required: true
 
   def button(%{rest: rest} = assigns) do
@@ -182,6 +182,7 @@ defmodule CabinetWeb.CoreComponents do
       "add" => "btn-success btn-sm btn-outline",
       "remove" => "btn-error text-xs btn-outline",
       "ghost" => "btn-ghost",
+      "outline" => "btn-neutral btn-outline",
       nil => "btn-primary btn-soft"
     }
 

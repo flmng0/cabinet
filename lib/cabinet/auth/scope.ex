@@ -35,5 +35,6 @@ defmodule Cabinet.Auth.Scope do
   def put_client(%__MODULE__{} = scope, %Client{} = client) do
     %{scope | client: client}
   end
+
   def put_client(%__MODULE__{} = scope, nil), do: scope
 end

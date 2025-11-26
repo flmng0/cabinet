@@ -19,6 +19,39 @@
 
     <div class="space-y-6 lg:space-y-12">
       <section>
+        <.header size="medium">Access Token</.header>
+
+        <div class="join w-full">
+          <.button
+            variant="primary"
+            class="join-item tooltip"
+            phx-click="refresh-link"
+            data-tip="Generate access link"
+            aria-label="Generate access link"
+          >
+            <.icon name="hero-arrow-path" />
+          </.button>
+          <input
+            type="text"
+            value={@access_link}
+            class="input grow join-item"
+            readonly
+            disabled={!@access_link}
+          />
+          <.button
+            variant="outline"
+            class="join-item tooltip"
+            disabled={!@access_link}
+            phx-click={JS.dispatch("cab:copytext", to: "input[type='text']")}
+            data-tip="Copy link"
+            aria-label="Copy link"
+          >
+            <.icon name="hero-clipboard-document" />
+          </.button>
+        </div>
+      </section>
+
+      <section>
         <.header size="medium" class="mb-4">Invoice Details</.header>
 
         <.detail_list>
@@ -34,7 +67,8 @@
           </:item>
 
           <:item name="Subtotal">
-            {format_money(@invoice.subtotal)} <span class="text-sm text-base-content/50">AUD</span>
+            {format_money(@invoice.subtotal)}
+            <span class="text-sm text-base-content/50">AUD</span>
           </:item>
           <:item name="GST Applied">
             {format_money(@invoice.total_gst)}

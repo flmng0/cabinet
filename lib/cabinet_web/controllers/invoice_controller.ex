@@ -16,10 +16,17 @@ defmodule CabinetWeb.InvoiceController do
     end
   end
 
-  def view(conn, %{"refnum" => refnum}) do
+  def view(conn, %{"refnum" => refnum} = params) do
     with {:ok, refnum} <- parse_refnum(refnum) do
-      if invoice = Invoices.get_invoice(conn.assigns.current_scope, refnum, full?: true) do
-        Invoices.view_invoice(conn.assigns.current_scope, invoice)
+      accessor =
+        if scope = conn.assigns.current_scope do
+          scope
+        else
+          Cabinet.AccessToken.verify_token(Cabinet.Schema.Invoice, params["token"])
+        end
+
+      if invoice = Invoices.get_invoice(accessor, refnum, full?: true) do
+        Invoices.view_invoice(accessor, invoice)
 
         conn
         |> assign_business()

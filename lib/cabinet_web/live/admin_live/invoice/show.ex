@@ -24,17 +24,27 @@ defmodule CabinetWeb.AdminLive.Invoice.Show do
     socket =
       socket
       |> assign(:invoice, invoice)
-      |> assign(:client_id, nil)
+      |> assign(:access_link, nil)
       |> assign(:page_title, title)
 
     {:noreply, socket}
   end
 
   @impl true
+  def handle_event("refresh-link", _params, socket) do
+    invoice = socket.assigns.invoice
+    token = Cabinet.AccessToken.sign(invoice)
+
+    link = url(socket, ~p"/invoice/#{invoice}?#{[token: token]}")
+
+    {:noreply, assign(socket, :access_link, link)}
+  end
+
+  @impl true
   def handle_info({:submit_invoice, attrs}, socket) do
     with {:ok, invoice} <-
            Invoices.update_invoice(socket.assigns.current_scope, socket.assigns.invoice, attrs) do
-      {:noreply, push_patch(socket, to: ~p"/admin/invoice/#{invoice.id}")}
+      {:noreply, push_patch(socket, to: ~p"/admin/invoice/#{invoice}")}
     else
       _ ->
         {:noreply, socket}
