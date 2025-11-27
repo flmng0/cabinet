@@ -121,7 +121,7 @@ defmodule CabinetWeb.Layouts do
           {render_slot(@inner_block)}
 
           <div
-            :if={Application.fetch_env!(:cabinet, :dev_utils) && @util != []}
+            :if={Application.get_env(:cabinet, :dev_utils) && @util != []}
             class="rounded-md border border-secondary-content bg-secondary text-secondary-content p-4 mt-12 col-span-full self-start"
           >
             <.header>
