@@ -28,10 +28,7 @@ defmodule CabinetWeb.InvoiceController do
       if invoice = Invoices.get_invoice(accessor, refnum, full?: true) do
         Invoices.view_invoice(accessor, invoice)
 
-        hide_home_button = match?(%Cabinet.AccessToken{}, accessor)
-
         conn
-        |> assign(:hide_home_button, hide_home_button)
         |> assign_business()
         |> assign_invoice(invoice)
         |> render(:view)
