@@ -35,7 +35,7 @@ defmodule CabinetWeb.AdminLive.Invoice.Show do
     invoice = socket.assigns.invoice
     token = Cabinet.AccessToken.sign(invoice)
 
-    link = url(socket, ~p"/invoice/#{invoice.id}?#{[token: token]}")
+    link = url(socket, ~p"/invoice/#{invoice}?#{[token: token]}")
 
     {:noreply, assign(socket, :access_link, link)}
   end
