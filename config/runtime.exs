@@ -131,4 +131,6 @@ if config_env() == :prod do
     contact_name: System.get_env("BUSINESS_NAME"),
     contact_email: System.get_env("BUSINESS_CONTACT_EMAIL"),
     contact_number: System.get_env("BUSINESS_CONTACT_NUMBER")
+
+  config :cabinet, :superuser_email, System.fetch_env!("SUPERUSER_EMAIL")
 end
