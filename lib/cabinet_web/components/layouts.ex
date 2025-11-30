@@ -36,15 +36,17 @@ defmodule CabinetWeb.Layouts do
       <.app_header
         current_scope={@current_scope}
         show_admin={!assigns[:admin_view]}
-        class="flex-none"
+        class="flex-none print:hidden"
       />
 
-      <.main_container class={@class}>{render_slot(@inner_block)}</.main_container>
+      <.main_container class={[@class, "print:m-0 print:p-0"]}>
+        {render_slot(@inner_block)}
+      </.main_container>
     </div>
     """
   end
 
-  attr :class, :string, default: nil
+  attr :class, :any, default: nil
   slot :inner_block, required: true
 
   def main_container(assigns) do

@@ -14,7 +14,9 @@ defmodule CabinetWeb.InvoiceHTML do
 
   def section_label(assigns) do
     ~H"""
-    <h2 class="text text-base-content/50 font-mono lowercase text-sm">{render_slot(@inner_block)}</h2>
+    <h2 class="text text-base-content/50 font-mono lowercase text-sm print:text-black print:italic">
+      {render_slot(@inner_block)}
+    </h2>
     """
   end
 

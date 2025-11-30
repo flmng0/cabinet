@@ -1,6 +1,6 @@
-<Layouts.app current_scope={@current_scope} class="bg-base-200">
-  <article class="w-full min-w-0 md:max-w-2xl mx-auto py-6 px-2 md:px-8 bg-base-100 shadow-sm rounded-md space-y-8">
-    <header class="grid grid-cols-1 md:grid-cols-2 px-4 gap-y-6">
+<Layouts.app current_scope={@current_scope} class="bg-base-200 print:bg-white print:text-black">
+  <article class="w-full min-w-0 md:max-w-2xl mx-auto py-6 px-2 md:px-8 bg-base-100 shadow-sm rounded-md space-y-8 print:p-0 print:space-y-2 print:shadow-none">
+    <header class="grid grid-cols-1 md:grid-cols-2 px-4 gap-y-6 print:gap-y-2">
       <h1 class="text-2xl bold uppercase text-center md:col-span-2 mb-6">
         {if @invoice.gst, do: "Tax"} Invoice
       </h1>
@@ -95,7 +95,7 @@
 
       <section class="px-4">
         <.section_label>Payment</.section_label>
-        <address class="flex flex-col gap-1 mt-2 items-start w-fit">
+        <address class="flex flex-col gap-1 mt-2 items-start w-fit not-italic">
           <%= if @bsb && @account_number do %>
             <span>BSB: {format_bsb(@bsb)}</span>
             <span>Account Number: {@account_number}</span>
