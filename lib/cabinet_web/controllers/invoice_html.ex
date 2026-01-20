@@ -43,4 +43,16 @@ defmodule CabinetWeb.InvoiceHTML do
     </span>
     """
   end
+
+  def paid_date(assigns) do
+    ~H"""
+    <span class={@invoice.paid? || "text-warning italic"}>
+      <%= if @invoice.paid? do %>
+        <time>{format_date(@invoice.paid_at)}</time>
+      <% else %>
+        Not yet paid
+      <% end %>
+    </span>
+    """
+  end
 end

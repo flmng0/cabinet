@@ -1,6 +1,9 @@
 <Layouts.app current_scope={@current_scope} class="bg-base-200">
   <ul class="flex flex-col gap-3">
-    <li :for={invoice <- @invoices} class="card bg-base-100 shadow-sm">
+    <li
+      :for={invoice <- @invoices}
+      class={["card bg-base-100 shadow-sm", invoice.paid? && "ring ring-success"]}
+    >
       <div class="card-body">
         <div class="flex justify-between items-center gap-2">
           <span class={[
@@ -10,6 +13,7 @@
             {invoice.title || "No Title"}
           </span>
           <span :if={invoice.late?} class="badge badge-error badge-sm">Late</span>
+          <span :if={invoice.paid?} class="badge badge-success badge-sm">Paid</span>
           <span class="font-mono text-base-content/70 text-sm">
             {format_refnum(invoice.id)}
           </span>

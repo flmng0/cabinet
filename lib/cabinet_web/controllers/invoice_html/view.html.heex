@@ -1,9 +1,13 @@
 <Layouts.app current_scope={@current_scope} class="bg-base-200 print:bg-white print:text-black">
-  <article class="w-full min-w-0 md:max-w-2xl mx-auto py-6 px-2 md:px-8 bg-base-100 shadow-sm rounded-md space-y-8 print:p-0 print:space-y-2 print:shadow-none">
-    <header class="grid grid-cols-1 md:grid-cols-2 px-4 gap-y-6 print:gap-y-2">
-      <h1 class="text-2xl bold uppercase text-center md:col-span-2 mb-6">
+  <article class="w-full min-w-0 sm:max-w-2xl mx-auto py-6 px-2 sm:px-8 bg-base-100 shadow-sm rounded-md space-y-8 print:p-0 print:space-y-2 print:shadow-none">
+    <header class="grid grid-cols-1 md:grid-cols-2 print:sm:grid-cols-2 px-4 gap-y-6 print:gap-y-4">
+      <h1 class="text-2xl bold uppercase text-center sm:col-span-2 mb-6">
         {if @invoice.gst, do: "Tax"} Invoice
       </h1>
+      <div :if={@invoice.paid?} role="alert" class="alert alert-success md:col-span-2">
+        <.icon name="hero-check-solid" />
+        <span>This invoice has been paid</span>
+      </div>
 
       <section>
         <.section_label>Amount Due</.section_label>
@@ -40,6 +44,11 @@
       <section>
         <.section_label>Due Date</.section_label>
         <.due_date invoice={@invoice} />
+      </section>
+
+      <section>
+        <.section_label>Paid Date</.section_label>
+        <.paid_date invoice={@invoice} />
       </section>
     </header>
 

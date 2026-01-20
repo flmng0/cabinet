@@ -17,11 +17,13 @@ defmodule Cabinet.Schema.Invoice do
 
     field :term, :string
     field :due, :date
+    field :paid_at, :date
 
     field :gst, :boolean
 
     field :viewed, :boolean, default: false
 
+    field :paid?, :boolean, virtual: true
     field :late?, :boolean, virtual: true
     field :days_overdue, :integer, virtual: true
 
@@ -37,7 +39,7 @@ defmodule Cabinet.Schema.Invoice do
 
   def changeset(invoice, attrs) do
     invoice
-    |> cast(attrs, [:term, :due])
+    |> cast(attrs, [:term, :due, :paid?])
     |> validate_required([:due])
     |> cast_assoc(:units, sort_param: :unit_sort, drop_param: :unit_drop)
   end
@@ -51,7 +53,8 @@ defmodule Cabinet.Schema.Invoice do
 
     from invoice in query,
       select_merge: %{
-        late?: ^today > invoice.due,
+        paid?: ^today >= invoice.paid_at,
+        late?: is_nil(invoice.paid_at) and ^today > invoice.due,
         days_overdue: ^today - invoice.due
       }
   end

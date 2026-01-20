@@ -62,6 +62,13 @@
           </:item>
 
           <:item name="Due Date">{@invoice.due}</:item>
+          <:item name="Paid">
+            <%= if @invoice.paid_at do %>
+              Yes ({@invoice.paid_at})
+            <% else %>
+              No
+            <% end %>
+          </:item>
           <:item name="Terms" class={["mb-2", @invoice.term || "italic text-base-content/50"]}>
             {@invoice.term || "N/A"}
           </:item>
