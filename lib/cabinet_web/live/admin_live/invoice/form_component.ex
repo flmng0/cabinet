@@ -98,18 +98,11 @@ defmodule CabinetWeb.AdminLive.Invoice.FormComponent do
   def update(assigns, socket) do
     invoice = assigns.invoice
 
-    initial_params =
-      if Enum.empty?(invoice.units) do
-        %{units: [%{}]}
-      else
-        %{}
-      end
-
     socket =
       socket
       |> assign(:invoice, invoice)
       |> assign(:cancel, assigns[:cancel])
-      |> assign_form(initial_params)
+      |> assign_form(%{})
 
     {:ok, socket}
   end

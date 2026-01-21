@@ -39,7 +39,7 @@ defmodule Cabinet.Schema.Invoice do
 
   def changeset(invoice, attrs) do
     invoice
-    |> cast(attrs, [:term, :due, :paid?])
+    |> cast(attrs, [:term, :due, :paid_at])
     |> validate_required([:due])
     |> cast_assoc(:units, sort_param: :unit_sort, drop_param: :unit_drop)
   end
